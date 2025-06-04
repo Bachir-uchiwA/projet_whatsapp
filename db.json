@@ -1,0 +1,10 @@
+{
+  "users": [
+    { "phone": "775626363", "country": "SN" },
+    { "phone": "0612345678", "country": "FR" },
+    { "phone": "4155551234", "country": "US" },
+    { "phone": "4155551239", "country": "US" }
+  ],
+  "messages": [],
+  "chats": []
+}
