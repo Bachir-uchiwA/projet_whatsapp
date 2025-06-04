@@ -8,8 +8,10 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
         const phone = document.getElementById('phone').value.trim();
         const country = document.getElementById('country').value;
         
-        // Add error handling for fetch
-        const response = await fetch(`/api/users?phone=${phone}&country=${country}`, {
+        const apiUrl = import.meta.env.VITE_API_URL || '/api';
+        
+        // Vérification de l'utilisateur
+        const response = await fetch(`${apiUrl}/users?phone=${phone}&country=${country}`, {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
@@ -27,8 +29,8 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
             return;
         }
 
-        // Création d'une session
-        const sessionResponse = await fetch('/api/sessions', {
+        // Création de la session
+        const sessionResponse = await fetch(`${apiUrl}/sessions`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -42,22 +44,20 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
         });
 
         if (!sessionResponse.ok) {
-            throw new Error('Erreur lors de la création de la session');
+            const errorData = await sessionResponse.json();
+            throw new Error(errorData.message || 'Erreur lors de la création de la session');
         }
 
         const session = await sessionResponse.json();
-        
-        // Authentification réussie
         showMessage('Connexion réussie ! Redirection...', 'success');
         
-        // Attendre un peu pour que l'utilisateur voie le message de succès
         setTimeout(() => {
-            window.location.href = `chat.html?sessionId=${session.id}`;
+            window.location.href = `/chat.html?sessionId=${session.id}`;
         }, 1500);
         
     } catch (error) {
         console.error('Error:', error);
-        showMessage('Erreur de connexion au serveur. Veuillez réessayer.', 'error');
+        showMessage(error.message || 'Erreur de connexion au serveur. Veuillez réessayer.', 'error');
     }
 });
 
