@@ -1,6 +1,12 @@
-const jsonServer = require('json-server');
+import jsonServer from 'json-server';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 const server = jsonServer.create();
-const router = jsonServer.router('db.json');
+const router = jsonServer.router(join(__dirname, 'db.json'));
 const middlewares = jsonServer.defaults();
 
 // Configuration CORS
@@ -14,5 +20,12 @@ server.use((req, res, next) => {
 server.use(middlewares);
 server.use('/api', router); // Préfixe toutes les routes avec /api
 
-// Export pour Vercel
-module.exports = server;
+// Start server if not in production
+if (process.env.NODE_ENV !== 'production') {
+  const PORT = 3000;
+  server.listen(PORT, () => {
+    console.log(`JSON Server is running on port ${PORT}`);
+  });
+}
+
+export default server;

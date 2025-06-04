@@ -4,34 +4,20 @@ import { countryRules } from './countries.js';
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    const phone = document.getElementById('phone').value.trim();
-    const country = document.getElementById('country').value;
-    const submitBtn = e.target.querySelector('button[type="submit"]');
-    const messageDiv = document.getElementById('message');
-    
-    // Récupération des règles du pays sélectionné
-    const rule = countryRules[country];
-    
-    // Validation du format du numéro selon le pays
-    if (!rule.regex.test(phone)) {
-        showMessage(
-            `Numéro invalide pour ${rule.name}. Exemple: ${rule.example}`,
-            'error'
-        );
-        return;
-    }
-    
-    // Animation du bouton pendant la connexion
-    const originalBtnContent = submitBtn.innerHTML;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Connexion en cours...';
-    submitBtn.disabled = true;
-    submitBtn.classList.add('opacity-75', 'cursor-not-allowed');
-    
     try {
-        const response = await fetch(`/api/users?phone=${phone}&country=${country}`);
+        const phone = document.getElementById('phone').value.trim();
+        const country = document.getElementById('country').value;
+        
+        // Add error handling for fetch
+        const response = await fetch(`/api/users?phone=${phone}&country=${country}`, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        });
         
         if (!response.ok) {
-            throw new Error('Erreur de réseau');
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
         
         const users = await response.json();
@@ -70,15 +56,8 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
         }, 1500);
         
     } catch (error) {
-        console.error('Erreur de connexion:', error);
+        console.error('Error:', error);
         showMessage('Erreur de connexion au serveur. Veuillez réessayer.', 'error');
-    } finally {
-        // Restauration du bouton après un délai
-        setTimeout(() => {
-            submitBtn.innerHTML = originalBtnContent;
-            submitBtn.disabled = false;
-            submitBtn.classList.remove('opacity-75', 'cursor-not-allowed');
-        }, 2000);
     }
 });
 

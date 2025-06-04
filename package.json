@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build && npx tailwindcss -i ./src/style.css -o ./dist/style.css --minify",
     "preview": "vite preview",
-    "server": "node server.js"
+    "server": "NODE_ENV=development node server.js"
   },
   "dependencies": {
     "json-server": "^0.17.4"
