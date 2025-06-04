@@ -9,7 +9,7 @@ export async function checkAuth() {
     }
 
     try {
-        const response = await fetch(`http://localhost:3000/sessions/${sessionId}`);
+        const response = await fetch(`/api/sessions/${sessionId}`);
         if (!response.ok) {
             throw new Error('Session invalide');
         }
@@ -21,7 +21,7 @@ export async function checkAuth() {
         const now = new Date();
         if (now - sessionDate > 24 * 60 * 60 * 1000) {
             // Supprimer la session expirée
-            await fetch(`http://localhost:3000/sessions/${sessionId}`, {
+            await fetch(`/api/sessions/${sessionId}`, {
                 method: 'DELETE'
             });
             window.location.href = '/';

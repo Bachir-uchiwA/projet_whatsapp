@@ -28,8 +28,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
     submitBtn.classList.add('opacity-75', 'cursor-not-allowed');
     
     try {
-        // Vérification de l'existence de l'utilisateur dans la base
-        const response = await fetch(`http://localhost:3000/users?phone=${phone}&country=${country}`);
+        const response = await fetch(`/api/users?phone=${phone}&country=${country}`);
         
         if (!response.ok) {
             throw new Error('Erreur de réseau');
@@ -43,7 +42,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
         }
 
         // Création d'une session
-        const sessionResponse = await fetch('http://localhost:3000/sessions', {
+        const sessionResponse = await fetch('/api/sessions', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
