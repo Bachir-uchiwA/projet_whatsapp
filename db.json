@@ -1,9 +1,34 @@
 {
   "users": [
-    { "phone": "775626363", "country": "SN" },
-    { "phone": "0612345678", "country": "FR" },
-    { "phone": "4155551234", "country": "US" },
-    { "phone": "4155551239", "country": "US" }
+    {
+      "phone": "775626363",
+      "country": "SN",
+      "id": "9c08"
+    },
+    {
+      "phone": "0612345678",
+      "country": "FR",
+      "id": "1981"
+    },
+    {
+      "phone": "4155551234",
+      "country": "US",
+      "id": "a3f2"
+    },
+    {
+      "phone": "4155551239",
+      "country": "US",
+      "id": "5c8b"
+    }
+  ],
+  "sessions": [
+    {
+      "id": "953a",
+      "userId": "9c08",
+      "phone": "775626363",
+      "country": "SN",
+      "createdAt": "2025-06-04T16:46:55.549Z"
+    }
   ],
   "messages": [],
   "chats": []

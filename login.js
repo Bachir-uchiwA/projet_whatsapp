@@ -41,13 +41,33 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
             showMessage("Ce numéro n'existe pas dans la base pour ce pays.", 'error');
             return;
         }
+
+        // Création d'une session
+        const sessionResponse = await fetch('http://localhost:3000/sessions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                userId: users[0].id,
+                phone: phone,
+                country: country,
+                createdAt: new Date().toISOString()
+            })
+        });
+
+        if (!sessionResponse.ok) {
+            throw new Error('Erreur lors de la création de la session');
+        }
+
+        const session = await sessionResponse.json();
         
         // Authentification réussie
         showMessage('Connexion réussie ! Redirection...', 'success');
         
         // Attendre un peu pour que l'utilisateur voie le message de succès
         setTimeout(() => {
-            window.location.href = 'index.html';
+            window.location.href = `chat.html?sessionId=${session.id}`;
         }, 1500);
         
     } catch (error) {
