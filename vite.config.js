@@ -4,13 +4,18 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
+    rollupOptions: {
+      output: {
+        format: 'es'
+      }
+    }
   },
   server: {
     proxy: {
-      '/api': 'http://localhost:3000'
+      '/api': {
+        target: 'http://localhost:3000',
+        changeOrigin: true
+      }
     }
-  },
-  optimizeDeps: {
-    include: ['tailwindcss']
   }
 })
