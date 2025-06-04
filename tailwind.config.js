@@ -1,11 +1,16 @@
+/** @type {import('tailwindcss').Config} */
 export default {
   content: [
-    "./index.html",
-    "./login.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
+    "./*.{html,js}",
+    "./src/**/*.{js,ts,jsx,tsx}"
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        'whatsapp-green': '#25D366',
+        'whatsapp-dark-green': '#128C7E'
+      }
+    },
   },
   plugins: [],
 }

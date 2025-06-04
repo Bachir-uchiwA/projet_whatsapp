@@ -2,11 +2,13 @@
   "version": 2,
   "builds": [
     { "src": "*.html", "use": "@vercel/static" },
+    { "src": "*.js", "use": "@vercel/static" },
     { "src": "server.js", "use": "@vercel/node" }
   ],
   "routes": [
     { "src": "/", "dest": "/index.html" },
     { "src": "/chat", "dest": "/chat.html" },
-    { "src": "/api/(.*)", "dest": "/server.js" }
+    { "src": "/api/(.*)", "dest": "/server.js" },
+    { "src": "/(.*).js", "dest": "/$1.js", "headers": { "Content-Type": "application/javascript" } }
   ]
 }

@@ -5,17 +5,17 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && npx tailwindcss -i ./src/style.css -o ./dist/style.css --minify",
     "preview": "vite preview",
-    "server": "json-server --watch db.json --port 3000"
+    "server": "node server.js"
   },
   "dependencies": {
     "json-server": "^0.17.4"
   },
   "devDependencies": {
-    "vite": "^5.0.0",
-    "autoprefixer": "^10.4.16",
-    "postcss": "^8.4.31",
-    "tailwindcss": "^3.3.5"
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.4",
+    "tailwindcss": "^3.4.17",
+    "vite": "^5.0.0"
   }
 }
