@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && npx tailwindcss -i ./src/style.css -o ./dist/style.css --minify",
+    "build": "vite build && npm run build:css",
+    "build:css": "tailwindcss -i ./src/style.css -o ./dist/style.css --minify",
     "vercel-build": "npm run build",
     "preview": "vite preview",
     "server": "NODE_ENV=development node server.js"
