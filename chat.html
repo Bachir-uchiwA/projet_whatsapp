@@ -30,11 +30,16 @@
         import { checkAuth } from './auth.js';
         
         async function init() {
-            const session = await checkAuth();
-            if (!session) {
-                return;
+            try {
+                const session = await checkAuth();
+                if (!session) {
+                    return;
+                }
+                // Initialize chat interface with session data
+                console.log('Session active:', session);
+            } catch (error) {
+                console.error('Error initializing chat:', error);
             }
-            // Initialiser l'interface de chat avec les données de session
         }
 
         document.addEventListener('DOMContentLoaded', init);

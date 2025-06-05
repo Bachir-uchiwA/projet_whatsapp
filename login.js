@@ -30,30 +30,38 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
         }
 
         // Création de la session
-        const sessionResponse = await fetch(`${apiUrl}/sessions`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                userId: users[0].id,
-                phone: phone,
-                country: country,
-                createdAt: new Date().toISOString()
-            })
-        });
+        try {
+            const sessionResponse = await fetch('/api/sessions', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    userId: users[0].id,
+                    phone: phone,
+                    country: country,
+                    createdAt: new Date().toISOString()
+                })
+            });
 
-        if (!sessionResponse.ok) {
-            const errorData = await sessionResponse.json();
-            throw new Error(errorData.message || 'Erreur lors de la création de la session');
+            if (!sessionResponse.ok) {
+                const errorText = await sessionResponse.text();
+                console.error('Server response:', errorText);
+                throw new Error('Erreur lors de la création de la session');
+            }
+
+            const session = await sessionResponse.json();
+            showMessage('Connexion réussie ! Redirection...', 'success');
+            
+            setTimeout(() => {
+                window.location.href = `/chat.html?sessionId=${session.id}`;
+            }, 1500);
+            
+        } catch (error) {
+            console.error('Error details:', error);
+            showMessage(error.message || 'Erreur de connexion au serveur', 'error');
         }
-
-        const session = await sessionResponse.json();
-        showMessage('Connexion réussie ! Redirection...', 'success');
-        
-        setTimeout(() => {
-            window.location.href = `/chat.html?sessionId=${session.id}`;
-        }, 1500);
         
     } catch (error) {
         console.error('Error:', error);

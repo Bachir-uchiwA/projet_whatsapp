@@ -1,5 +1,5 @@
 export async function checkAuth() {
-    // Récupérer l'ID de session depuis l'URL
+    // Get session ID from URL
     const urlParams = new URLSearchParams(window.location.search);
     const sessionId = urlParams.get('sessionId');
 
@@ -9,29 +9,48 @@ export async function checkAuth() {
     }
 
     try {
-        const response = await fetch(`/api/sessions/${sessionId}`);
+        // Add proper headers and error handling
+        const response = await fetch(`/api/sessions/${sessionId}`, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        });
+
         if (!response.ok) {
-            throw new Error('Session invalide');
+            if (response.status === 404) {
+                throw new Error('Session non trouvée');
+            }
+            throw new Error('Erreur lors de la vérification de la session');
         }
 
         const session = await response.json();
         
-        // Vérifier si la session n'est pas expirée (ex: 24h)
+        // Check if session is expired (24h)
         const sessionDate = new Date(session.createdAt);
         const now = new Date();
-        if (now - sessionDate > 24 * 60 * 60 * 1000) {
-            // Supprimer la session expirée
+        const diff = now - sessionDate;
+        const hours = Math.floor(diff / 1000 / 60 / 60);
+        
+        if (hours > 24) {
+            // Delete expired session
             await fetch(`/api/sessions/${sessionId}`, {
-                method: 'DELETE'
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             });
-            window.location.href = '/';
-            return null;
+            throw new Error('Session expirée');
         }
 
         return session;
+
     } catch (error) {
         console.error('Erreur de vérification de session:', error);
-        window.location.href = '/';
+        // Redirect to login page
+        setTimeout(() => {
+            window.location.href = '/';
+        }, 1500);
         return null;
     }
 }
