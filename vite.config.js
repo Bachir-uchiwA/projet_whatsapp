@@ -4,11 +4,9 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
-    rollupOptions: {
-      output: {
-        format: 'es'
-      }
-    }
+  },
+  css: {
+    postcss: './postcss.config.js'
   },
   server: {
     proxy: {
@@ -17,6 +15,9 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, '')
       }
+    },
+    hmr: {
+      overlay: false // Disable error overlay
     }
   }
 })

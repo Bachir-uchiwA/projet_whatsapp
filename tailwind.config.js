@@ -10,7 +10,7 @@ export default {
         'whatsapp-green': '#25D366',
         'whatsapp-dark-green': '#128C7E'
       }
-    },
+    }
   },
-  plugins: [],
+  plugins: []
 }
