@@ -1,6 +1,11 @@
 import { MongoClient } from 'mongodb';
 
 const uri = process.env.MONGODB_URI; // Mets cette variable dans tes secrets Vercel
+
+if (!uri) {
+  throw new Error('MONGODB_URI environment variable is not set');
+}
+
 const client = new MongoClient(uri);
 
 export default async function handler(req, res) {
