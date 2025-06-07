@@ -25,8 +25,16 @@ server.options('*', (req, res) => {
 // Parse JSON bodies
 server.use(jsonServer.bodyParser);
 
+// Désactive les routes d'écriture en production (Vercel)
+function isReadOnly() {
+    return process.env.NODE_ENV === 'production' || process.env.VERCEL === '1';
+}
+
 // Custom route for sessions
 server.post('/sessions', (req, res) => {
+    if (isReadOnly()) {
+        return res.status(403).json({ error: 'Read-only API on Vercel. No write allowed.' });
+    }
     try {
         const session = {
             ...req.body,
@@ -63,6 +71,13 @@ server.get('/sessions/:id', (req, res) => {
         console.error('Session lookup error:', error);
         res.status(500).json({ error: 'Error retrieving session' });
     }
+});
+
+server.use((req, res, next) => {
+    if (isReadOnly() && ['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method)) {
+        return res.status(403).json({ error: 'Read-only API on Vercel. No write allowed.' });
+    }
+    next();
 });
 
 server.use(middlewares);

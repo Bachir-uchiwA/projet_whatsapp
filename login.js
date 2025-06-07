@@ -48,6 +48,11 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
             if (!sessionResponse.ok) {
                 const errorText = await sessionResponse.text();
                 console.error('Server response:', errorText);
+                // Ajout d'un message explicite pour la prod Vercel
+                if (sessionResponse.status === 403) {
+                    showMessage("Impossible de créer une session sur la version déployée (lecture seule).", 'error');
+                    return;
+                }
                 throw new Error('Erreur lors de la création de la session');
             }
 
