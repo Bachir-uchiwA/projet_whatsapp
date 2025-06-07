@@ -3,34 +3,52 @@ import { countryRules } from './countries.js';
 // Gestionnaire du formulaire de connexion
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    
     try {
         const phone = document.getElementById('phone').value.trim();
         const country = document.getElementById('country').value;
-        
         const apiUrl = import.meta.env.VITE_API_URL || '/api';
-        
-        // Vérification de l'utilisateur
-        const response = await fetch(`${apiUrl}/users?phone=${phone}&country=${country}`, {
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        });
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const users = await response.json();
-        
-        if (users.length === 0) {
-            showMessage("Ce numéro n'existe pas dans la base pour ce pays.", 'error');
-            return;
-        }
 
-        // Création de la session
-        try {
+        // Utilise l'API MongoDB Atlas en production (Vercel)
+        let session;
+        if (window.location.hostname.endsWith('vercel.app')) {
+            // Appel à /api/login (MongoDB)
+            const response = await fetch(`${apiUrl}/login`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ phone, country })
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                showMessage(errorData.error || 'Erreur de connexion', 'error');
+                return;
+            }
+            session = await response.json();
+        } else {
+            // Mode local (json-server)
+            // Vérification de l'utilisateur
+            const response = await fetch(`${apiUrl}/users?phone=${phone}&country=${country}`, {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const users = await response.json();
+            
+            if (users.length === 0) {
+                showMessage("Ce numéro n'existe pas dans la base pour ce pays.", 'error');
+                return;
+            }
+
+            // Création de la session locale
             const sessionResponse = await fetch('/api/sessions', {
                 method: 'POST',
                 headers: {
@@ -56,18 +74,14 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
                 throw new Error('Erreur lors de la création de la session');
             }
 
-            const session = await sessionResponse.json();
-            showMessage('Connexion réussie ! Redirection...', 'success');
-            
-            setTimeout(() => {
-                window.location.href = `/chat.html?sessionId=${session.id}`;
-            }, 1500);
-            
-        } catch (error) {
-            console.error('Error details:', error);
-            showMessage(error.message || 'Erreur de connexion au serveur', 'error');
+            session = await sessionResponse.json();
         }
-        
+
+        showMessage('Connexion réussie ! Redirection...', 'success');
+        setTimeout(() => {
+            window.location.href = `/chat.html?sessionId=${session.id || session._id}`;
+        }, 1500);
+
     } catch (error) {
         console.error('Error:', error);
         showMessage(error.message || 'Erreur de connexion au serveur. Veuillez réessayer.', 'error');
