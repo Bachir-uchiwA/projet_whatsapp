@@ -8,7 +8,8 @@
     "build": "vite build && npm run build:css",
     "build:css": "tailwindcss -i ./src/style.css -o ./dist/style.css --minify",
     "preview": "vite preview",
-    "server": "NODE_ENV=development node server.js"
+    "server": "NODE_ENV=development node server.js",
+    "postinstall": "npm run build:css"
   },
   "dependencies": {
     "json-server": "^0.17.4"
