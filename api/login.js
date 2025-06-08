@@ -32,7 +32,8 @@ export default async function handler(req, res) {
     session.id = result.insertedId;
     res.status(200).json(session);
   } catch (err) {
-    console.error('Erreur API /api/login:', err);
+    // Log complet pour debug Vercel
+    console.error('Erreur API /api/login:', err, err.stack);
     res.status(500).json({ error: 'Erreur serveur', details: err.message });
   } finally {
     if (client) await client.close();
