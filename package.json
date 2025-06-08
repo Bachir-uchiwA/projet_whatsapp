@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && npm run build:css",
+    "build": "vite build && npm run build:css && cp chat.html dist/chat.html",
     "build:css": "tailwindcss -i ./src/style.css -o ./dist/style.css --minify",
     "preview": "vite preview",
     "server": "NODE_ENV=development node server.js",
