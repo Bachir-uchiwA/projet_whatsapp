@@ -1,12 +1,10 @@
 import { MongoClient } from 'mongodb';
 
-const uri = process.env.MONGODB_URI; // Mets cette variable dans tes secrets Vercel
+const uri = process.env.MONGODB_URI;
 
 if (!uri) {
   throw new Error('MONGODB_URI environment variable is not set');
 }
-
-const client = new MongoClient(uri);
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -14,15 +12,16 @@ export default async function handler(req, res) {
     return;
   }
   const { phone, country } = req.body;
+  let client;
   try {
+    client = new MongoClient(uri);
     await client.connect();
-    const db = client.db(); // nom de la base dans l’URI
+    const db = client.db(); // Utilise la base par défaut de l'URI
     const user = await db.collection('users').findOne({ phone, country });
     if (!user) {
       res.status(401).json({ error: 'Utilisateur non trouvé' });
       return;
     }
-    // Crée une session (exemple simple)
     const session = {
       userId: user._id,
       phone,
@@ -33,9 +32,9 @@ export default async function handler(req, res) {
     session.id = result.insertedId;
     res.status(200).json(session);
   } catch (err) {
-    console.error('Erreur API /api/login:', err); // <-- Ajoute ce log
+    console.error('Erreur API /api/login:', err);
     res.status(500).json({ error: 'Erreur serveur', details: err.message });
   } finally {
-    await client.close();
+    if (client) await client.close();
   }
 }

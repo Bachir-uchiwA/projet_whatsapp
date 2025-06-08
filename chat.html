@@ -25,24 +25,7 @@
             border-radius: 3px;
         }
     </style>
-    <script type="module">
-        import { checkAuth } from './auth.js';
-        
-        async function init() {
-            try {
-                const session = await checkAuth();
-                if (!session) {
-                    return;
-                }
-                // Initialize chat interface with session data
-                console.log('Session active:', session);
-            } catch (error) {
-                console.error('Error initializing chat:', error);
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', init);
-    </script>
+    <script type="module" src="chat.js"></script>
 </head>
 <body class="bg-gray-900 h-screen overflow-hidden">
     <div class="flex h-full">
