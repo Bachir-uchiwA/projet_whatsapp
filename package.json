@@ -4,7 +4,8 @@
   "description": "API WhatsApp clone avec json-server",
   "main": "db.json",
   "scripts": {
-    "start": "json-server --host 0.0.0.0 --watch db.json --port $PORT"
+    "start": "json-server --host 0.0.0.0 --watch db.json --port $PORT",
+    "vercel-build": "npm run build"
   },
   "dependencies": {
     "json-server": "^0.17.4"
