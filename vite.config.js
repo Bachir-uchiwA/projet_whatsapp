@@ -22,4 +22,5 @@ export default defineConfig({
   }
 })
 
+
 // Pas de changement nécessaire, le proxy ne s'applique qu'en dev
