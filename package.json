@@ -5,6 +5,8 @@
   "main": "db.json",
   "scripts": {
     "start": "json-server --host 0.0.0.0 --watch db.json --port $PORT",
+    "build": "vite build && npm run build:css && cp chat.html dist/chat.html",
+    "build:css": "tailwindcss -i ./src/style.css -o ./dist/style.css --minify",
     "vercel-build": "npm run build"
   },
   "dependencies": {
