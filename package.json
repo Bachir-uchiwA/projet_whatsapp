@@ -1,23 +1,12 @@
 {
-  "name": "whatsapp-clone",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
+  "name": "json-server-api",
+  "version": "1.0.0",
+  "description": "API WhatsApp clone avec json-server",
+  "main": "db.json",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build && npm run build:css && cp chat.html dist/chat.html",
-    "build:css": "tailwindcss -i ./src/style.css -o ./dist/style.css --minify",
-    "preview": "vite preview",
-    "server": "NODE_ENV=development node server.js",
-    "postinstall": "npm run build:css"
+    "start": "json-server --host 0.0.0.0 --watch db.json --port $PORT"
   },
   "dependencies": {
     "json-server": "^0.17.4"
-  },
-  "devDependencies": {
-    "autoprefixer": "^10.4.17",
-    "postcss": "^8.4.35",
-    "tailwindcss": "^3.4.1",
-    "vite": "^5.0.0"
   }
 }

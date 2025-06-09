@@ -1,3 +1,5 @@
+const apiUrl = import.meta.env.VITE_API_URL || '/api';
+
 export async function checkAuth() {
     // Get session ID from URL
     const urlParams = new URLSearchParams(window.location.search);
@@ -9,8 +11,7 @@ export async function checkAuth() {
     }
 
     try {
-        // Add proper headers and error handling
-        const response = await fetch(`/api/sessions/${sessionId}`, {
+        const response = await fetch(`${apiUrl}/sessions/${sessionId}`, {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
@@ -34,7 +35,7 @@ export async function checkAuth() {
         
         if (hours > 24) {
             // Delete expired session
-            await fetch(`/api/sessions/${sessionId}`, {
+            await fetch(`${apiUrl}/sessions/${sessionId}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json'
