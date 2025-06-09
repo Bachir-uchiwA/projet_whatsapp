@@ -11,22 +11,41 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
         // Utilise l'API MongoDB Atlas en production (Vercel)
         let session;
         if (window.location.hostname.endsWith('vercel.app')) {
-            // Appel à /api/login (MongoDB)
-            const response = await fetch(`${apiUrl}/login`, {
+            // Vérifie l'utilisateur
+            const response = await fetch(`${apiUrl}/users?phone=${phone}&country=${country}`, {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const users = await response.json();
+            if (users.length === 0) {
+                showMessage("Ce numéro n'existe pas dans la base pour ce pays.", 'error');
+                return;
+            }
+            // Crée la session sur Render
+            const sessionResponse = await fetch(`${apiUrl}/sessions`, {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ phone, country })
+                body: JSON.stringify({
+                    userId: users[0].id,
+                    phone: phone,
+                    country: country,
+                    createdAt: new Date().toISOString()
+                })
             });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                showMessage(errorData.error || 'Erreur de connexion', 'error');
+            if (!sessionResponse.ok) {
+                const errorText = await sessionResponse.text();
+                showMessage(errorText || 'Erreur lors de la création de la session', 'error');
                 return;
             }
-            session = await response.json();
+            session = await sessionResponse.json();
         } else {
             // Mode local (json-server)
             // Vérification de l'utilisateur
