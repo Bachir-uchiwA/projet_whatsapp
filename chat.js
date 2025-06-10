@@ -20,7 +20,6 @@ document.addEventListener('DOMContentLoaded', function() {
             sidebarChats.classList.remove('hidden');
         });
     }
-    // ...autres fonctionnalités JS éventuelles...
 });
 
 export {};
