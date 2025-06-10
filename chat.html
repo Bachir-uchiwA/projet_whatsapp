@@ -307,41 +307,76 @@
 
         <!-- Panneau paramètres caché par défaut -->
         <div id="sidebarSettings" class="w-200 bg-gray-900 flex flex-col hidden">
-    <div class="p-6 flex flex-col h-full">
-        <button id="backToChats" class="mb-6 flex items-center text-gray-300 hover:text-green-400 transition-colors w-fit">
+    <!-- En-tête utilisateur -->
+    <div class="flex flex-col items-center pt-8 pb-4 border-b border-gray-800">
+        <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="avatar" class="w-20 h-20 rounded-full border-4 border-gray-700 mb-2">
+        <div class="text-white font-semibold text-lg flex items-center space-x-1">
+            <span>Bachir_deV</span>
+            <span class="text-base">💻❌🇸🇳🖤</span>
+        </div>
+        <div class="text-gray-400 text-sm mt-1">Salut ! J'utilise WhatsApp.</div>
+    </div>
+    <!-- Liste des paramètres -->
+    <div class="flex-1 px-6 py-4">
+        <div class="space-y-6">
+            <!-- Compte -->
+            <div>
+                <div class="flex items-center space-x-3 mb-1">
+                    <i class="fas fa-key text-gray-300"></i>
+                    <span class="text-gray-200 font-medium">Compte</span>
+                </div>
+                <div class="text-gray-400 text-xs pl-8">Notifications de sécurité, informations de compte</div>
+            </div>
+            <!-- Confidentialité -->
+            <div>
+                <div class="flex items-center space-x-3 mb-1">
+                    <i class="fas fa-lock text-gray-300"></i>
+                    <span class="text-gray-200 font-medium">Confidentialité</span>
+                </div>
+                <div class="text-gray-400 text-xs pl-8">Contacts bloqués, messages éphémères</div>
+            </div>
+            <!-- Discussions -->
+            <div>
+                <div class="flex items-center space-x-3 mb-1">
+                    <i class="fas fa-comments text-gray-300"></i>
+                    <span class="text-gray-200 font-medium">Discussions</span>
+                </div>
+                <div class="text-gray-400 text-xs pl-8">Thème, fond d'écran, paramètres des discussions</div>
+            </div>
+            <!-- Notifications -->
+            <div>
+                <div class="flex items-center space-x-3 mb-1">
+                    <i class="fas fa-bell text-gray-300"></i>
+                    <span class="text-gray-200 font-medium">Notifications</span>
+                </div>
+                <div class="text-gray-400 text-xs pl-8">Notifications de messages</div>
+            </div>
+            <!-- Raccourcis clavier -->
+            <div>
+                <div class="flex items-center space-x-3 mb-1">
+                    <i class="fas fa-keyboard text-gray-300"></i>
+                    <span class="text-gray-200 font-medium">Raccourcis clavier</span>
+                </div>
+                <div class="text-gray-400 text-xs pl-8">Actions rapides</div>
+            </div>
+            <!-- Aide -->
+            <div>
+                <div class="flex items-center space-x-3 mb-1">
+                    <i class="fas fa-question-circle text-gray-300"></i>
+                    <span class="text-gray-200 font-medium">Aide</span>
+                </div>
+                <div class="text-gray-400 text-xs pl-8">Pages d'aide, contactez-nous, politique de confidentialité</div>
+            </div>
+        </div>
+    </div>
+    <!-- Bouton déconnexion -->
+    <div class="px-6 pb-6 mt-auto">
+        <button id="backToChats" class="flex items-center text-gray-400 hover:text-green-400 mb-6 transition-colors">
             <i class="fas fa-arrow-left mr-2"></i> Retour
         </button>
-        <div class="flex flex-col items-center mt-4">
-            <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="avatar" class="w-20 h-20 rounded-full border-4 border-gray-700 mb-4">
-            <h2 class="text-white text-xl font-semibold mb-1">Bachir IIR</h2>
-            <p class="text-gray-400 text-sm mb-6">En ligne</p>
-        </div>
-        <div class="flex-1">
-            <div class="mb-6">
-                <h3 class="text-gray-300 font-semibold mb-2">Compte</h3>
-                <ul class="space-y-2">
-                    <li><a href="#" class="text-gray-400 hover:text-green-400 transition-colors">Profil</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-green-400 transition-colors">Confidentialité</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-green-400 transition-colors">Sécurité</a></li>
-                </ul>
-            </div>
-            <div class="mb-6">
-                <h3 class="text-gray-300 font-semibold mb-2">Apparence</h3>
-                <ul class="space-y-2">
-                    <li><a href="#" class="text-gray-400 hover:text-green-400 transition-colors">Thème sombre</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-green-400 transition-colors">Notifications</a></li>
-                </ul>
-            </div>
-            <div>
-                <h3 class="text-gray-300 font-semibold mb-2">Aide</h3>
-                <ul class="space-y-2">
-                    <li><a href="#" class="text-gray-400 hover:text-green-400 transition-colors">FAQ</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-green-400 transition-colors">Contact support</a></li>
-                </ul>
-            </div>
-        </div>
-        <button class="mt-8 bg-red-500 hover:bg-red-600 text-white rounded-lg px-4 py-2 flex items-center justify-center transition-colors">
-            <i class="fas fa-sign-out-alt mr-2"></i> Déconnexion
+        <button id="settingsLogout" class="flex items-center text-red-500 hover:text-red-600 font-medium text-base mt-2 transition-colors">
+            <i class="fas fa-sign-out-alt mr-3"></i>
+            <span>Se déconnecter</span>
         </button>
     </div>
 </div>
@@ -462,6 +497,22 @@
         backToChats.addEventListener('click', () => {
             sidebarSettings.classList.add('hidden');
             sidebarChats.classList.remove('hidden');
+        });
+    }
+
+    // Déconnexion depuis le panneau paramètres
+    const settingsLogout = document.getElementById('settingsLogout');
+    if (settingsLogout) {
+        settingsLogout.addEventListener('click', async function(e) {
+            e.preventDefault();
+            const params = new URLSearchParams(window.location.search);
+            const sessionId = params.get('sessionId');
+            if (sessionId) {
+                try {
+                    await fetch(`/api/sessions/${sessionId}`, { method: 'DELETE' });
+                } catch (err) {}
+            }
+            window.location.href = '/index.html';
         });
     }
 </script>
