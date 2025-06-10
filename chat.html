@@ -474,36 +474,40 @@
     const menuBtn = document.getElementById('menuBtn');
     const contextMenu = document.getElementById('contextMenu');
     document.addEventListener('click', function(e) {
-        if (menuBtn.contains(e.target)) {
+        if (menuBtn && menuBtn.contains(e.target)) {
             contextMenu.classList.toggle('hidden');
-        } else if (!contextMenu.contains(e.target)) {
+        } else if (contextMenu && !contextMenu.contains(e.target)) {
             contextMenu.classList.add('hidden');
         }
     });
 
     // Déconnexion
-    document.getElementById('logoutBtn').addEventListener('click', async function(e) {
-        e.preventDefault();
-        // Récupère l'id de session dans l'URL
-        const params = new URLSearchParams(window.location.search);
-        const sessionId = params.get('sessionId');
-        if (sessionId) {
-            try {
-                // Appel API pour supprimer la session (si possible)
-                await fetch(`/api/sessions/${sessionId}`, { method: 'DELETE' });
-            } catch (err) {
-                // Ignore les erreurs (API read-only possible)
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', async function(e) {
+            e.preventDefault();
+            const params = new URLSearchParams(window.location.search);
+            const sessionId = params.get('sessionId');
+            if (sessionId) {
+                try {
+                    await fetch(`/api/sessions/${sessionId}`, { method: 'DELETE' });
+                } catch (err) {}
             }
-        }
-        // Redirige vers la page de connexion
-        window.location.href = '/index.html';
-    });
+            window.location.href = '/index.html';
+        });
+    }
 
     // Navigation sidebar : chat <-> paramètres
     const sidebarChatIcon = document.getElementById('sidebarChatIcon');
     const settingsIcon = document.getElementById('settingsIcon');
     const sidebarChats = document.getElementById('sidebarChats');
     const sidebarSettings = document.getElementById('sidebarSettings');
+
+    // Fix: ensure only one is visible at a time on load
+    if (sidebarChats && sidebarSettings) {
+        sidebarChats.classList.remove('hidden');
+        sidebarSettings.classList.add('hidden');
+    }
 
     if (sidebarChatIcon && sidebarChats && sidebarSettings) {
         sidebarChatIcon.addEventListener('click', () => {
