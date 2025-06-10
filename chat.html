@@ -473,4 +473,23 @@
         </div>
     </div>
 </body>
+<script>
+    // Gestion du menu contextuel (menuBtn)
+    const menuBtn = document.getElementById('menuBtn');
+    const contextMenu = document.getElementById('contextMenu');
+
+    menuBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        contextMenu.classList.toggle('hidden');
+    });
+
+    // Fermer le menu si on clique ailleurs
+    document.addEventListener('click', (e) => {
+        if (!contextMenu.classList.contains('hidden')) {
+            if (!contextMenu.contains(e.target) && e.target !== menuBtn) {
+                contextMenu.classList.add('hidden');
+            }
+        }
+    });
+</script>
 </html>
