@@ -29,6 +29,27 @@ document.addEventListener('DOMContentLoaded', function() {
             sidebarChats.classList.remove('hidden');
         });
     }
+
+    // Ajout gestion menu contextuel (menuBtn)
+    const menuBtn = document.getElementById('menuBtn');
+    const contextMenu = document.getElementById('contextMenu');
+
+    if (menuBtn && contextMenu) {
+        menuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            contextMenu.classList.toggle('hidden');
+        });
+
+        // Fermer le menu si clic en dehors
+        document.addEventListener('click', (e) => {
+            if (!contextMenu.classList.contains('hidden')) {
+                // Si le clic n'est pas sur le menu ni sur le bouton
+                if (!contextMenu.contains(e.target) && e.target !== menuBtn) {
+                    contextMenu.classList.add('hidden');
+                }
+            }
+        });
+    }
 });
 
 export {};
