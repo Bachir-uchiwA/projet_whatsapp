@@ -306,77 +306,91 @@
         </div>
 
         <!-- Panneau paramètres caché par défaut -->
-        <div id="sidebarSettings" class="w-200 bg-gray-900 flex flex-col hidden">
+        <div id="sidebarSettings" class="w-200 bg-gray-900 flex flex-col h-full hidden relative">
+    <!-- Bouton retour flottant -->
+    <button id="backToChats" class="absolute top-6 left-6 flex items-center text-gray-400 hover:text-green-400 bg-gray-800/80 rounded-full px-4 py-2 shadow transition-colors z-20">
+        <i class="fas fa-arrow-left mr-2"></i> Retour
+    </button>
     <!-- En-tête utilisateur -->
-    <div class="flex flex-col items-center pt-8 pb-4 border-b border-gray-800">
-        <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="avatar" class="w-20 h-20 rounded-full border-4 border-gray-700 mb-2">
-        <div class="text-white font-semibold text-lg flex items-center space-x-1">
-            <span>Bachir_deV</span>
-            <span class="text-base">💻❌🇸🇳🖤</span>
+    <div class="flex flex-col items-center pt-16 pb-6 border-b border-gray-800 relative">
+        <div class="relative">
+            <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="avatar" class="w-24 h-24 rounded-full border-4 border-gray-700 shadow-lg">
+            <span class="absolute bottom-2 right-2 w-5 h-5 bg-green-500 border-2 border-gray-900 rounded-full"></span>
         </div>
-        <div class="text-gray-400 text-sm mt-1">Salut ! J'utilise WhatsApp.</div>
+        <div class="mt-4 text-white font-bold text-xl flex items-center gap-2">
+            Bachir_deV
+            <span class="text-lg">💻❌🇸🇳🖤</span>
+        </div>
+        <div class="text-green-400 text-xs font-semibold mt-1 flex items-center gap-1">
+            <span class="w-2 h-2 bg-green-400 rounded-full inline-block"></span>
+            En ligne
+        </div>
+        <div class="text-gray-400 text-xs mt-2 px-4 text-center">Salut ! J'utilise WhatsApp.</div>
     </div>
     <!-- Liste des paramètres -->
-    <div class="flex-1 px-6 py-4">
-        <div class="space-y-6">
-            <!-- Compte -->
-            <div>
-                <div class="flex items-center space-x-3 mb-1">
-                    <i class="fas fa-key text-gray-300"></i>
-                    <span class="text-gray-200 font-medium">Compte</span>
-                </div>
-                <div class="text-gray-400 text-xs pl-8">Notifications de sécurité, informations de compte</div>
-            </div>
-            <!-- Confidentialité -->
-            <div>
-                <div class="flex items-center space-x-3 mb-1">
-                    <i class="fas fa-lock text-gray-300"></i>
-                    <span class="text-gray-200 font-medium">Confidentialité</span>
-                </div>
-                <div class="text-gray-400 text-xs pl-8">Contacts bloqués, messages éphémères</div>
-            </div>
-            <!-- Discussions -->
-            <div>
-                <div class="flex items-center space-x-3 mb-1">
-                    <i class="fas fa-comments text-gray-300"></i>
-                    <span class="text-gray-200 font-medium">Discussions</span>
-                </div>
-                <div class="text-gray-400 text-xs pl-8">Thème, fond d'écran, paramètres des discussions</div>
-            </div>
-            <!-- Notifications -->
-            <div>
-                <div class="flex items-center space-x-3 mb-1">
-                    <i class="fas fa-bell text-gray-300"></i>
-                    <span class="text-gray-200 font-medium">Notifications</span>
-                </div>
-                <div class="text-gray-400 text-xs pl-8">Notifications de messages</div>
-            </div>
-            <!-- Raccourcis clavier -->
-            <div>
-                <div class="flex items-center space-x-3 mb-1">
-                    <i class="fas fa-keyboard text-gray-300"></i>
-                    <span class="text-gray-200 font-medium">Raccourcis clavier</span>
-                </div>
-                <div class="text-gray-400 text-xs pl-8">Actions rapides</div>
-            </div>
-            <!-- Aide -->
-            <div>
-                <div class="flex items-center space-x-3 mb-1">
-                    <i class="fas fa-question-circle text-gray-300"></i>
-                    <span class="text-gray-200 font-medium">Aide</span>
-                </div>
-                <div class="text-gray-400 text-xs pl-8">Pages d'aide, contactez-nous, politique de confidentialité</div>
-            </div>
-        </div>
+    <div class="flex-1 px-0 py-0 overflow-y-auto">
+        <ul class="divide-y divide-gray-800">
+            <li>
+                <a href="#" class="flex items-center px-8 py-5 hover:bg-gray-800 transition group">
+                    <i class="fas fa-user-shield text-green-400 text-lg w-7"></i>
+                    <div class="ml-4">
+                        <div class="text-gray-100 font-medium">Compte</div>
+                        <div class="text-gray-500 text-xs">Notifications de sécurité, informations de compte</div>
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="flex items-center px-8 py-5 hover:bg-gray-800 transition group">
+                    <i class="fas fa-user-lock text-green-400 text-lg w-7"></i>
+                    <div class="ml-4">
+                        <div class="text-gray-100 font-medium">Confidentialité</div>
+                        <div class="text-gray-500 text-xs">Contacts bloqués, messages éphémères</div>
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="flex items-center px-8 py-5 hover:bg-gray-800 transition group">
+                    <i class="fas fa-comments text-green-400 text-lg w-7"></i>
+                    <div class="ml-4">
+                        <div class="text-gray-100 font-medium">Discussions</div>
+                        <div class="text-gray-500 text-xs">Thème, fond d'écran, paramètres des discussions</div>
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="flex items-center px-8 py-5 hover:bg-gray-800 transition group">
+                    <i class="fas fa-bell text-green-400 text-lg w-7"></i>
+                    <div class="ml-4">
+                        <div class="text-gray-100 font-medium">Notifications</div>
+                        <div class="text-gray-500 text-xs">Notifications de messages</div>
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="flex items-center px-8 py-5 hover:bg-gray-800 transition group">
+                    <i class="fas fa-keyboard text-green-400 text-lg w-7"></i>
+                    <div class="ml-4">
+                        <div class="text-gray-100 font-medium">Raccourcis clavier</div>
+                        <div class="text-gray-500 text-xs">Actions rapides</div>
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="flex items-center px-8 py-5 hover:bg-gray-800 transition group">
+                    <i class="fas fa-question-circle text-green-400 text-lg w-7"></i>
+                    <div class="ml-4">
+                        <div class="text-gray-100 font-medium">Aide</div>
+                        <div class="text-gray-500 text-xs">Pages d'aide, contactez-nous, politique de confidentialité</div>
+                    </div>
+                </a>
+            </li>
+        </ul>
     </div>
-    <!-- Bouton déconnexion -->
-    <div class="px-6 pb-6 mt-auto">
-        <button id="backToChats" class="flex items-center text-gray-400 hover:text-green-400 mb-6 transition-colors">
-            <i class="fas fa-arrow-left mr-2"></i> Retour
-        </button>
-        <button id="settingsLogout" class="flex items-center text-red-500 hover:text-red-600 font-medium text-base mt-2 transition-colors">
-            <i class="fas fa-sign-out-alt mr-3"></i>
-            <span>Se déconnecter</span>
+    <!-- Bouton déconnexion bien en bas -->
+    <div class="px-8 pb-8 pt-4 mt-auto">
+        <button id="settingsLogout" class="w-full flex items-center justify-center gap-3 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-xl py-3 shadow transition-colors text-base">
+            <i class="fas fa-sign-out-alt"></i>
+            Se déconnecter
         </button>
     </div>
 </div>
