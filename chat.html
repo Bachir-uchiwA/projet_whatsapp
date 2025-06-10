@@ -307,12 +307,16 @@
  
         <!-- Panneau paramètres caché par défaut -->
         <div id="sidebarSettings" class="w-200 bg-gray-900 flex flex-col h-full hidden relative">
-    <!-- Bouton retour flottant -->
-    <button id="backToChats" class="absolute top-6 left-6 flex items-center text-gray-400 hover:text-green-400 bg-gray-800/80 rounded-full px-4 py-2 shadow transition-colors z-20">
-        <i class="fas fa-arrow-left mr-2"></i> Retour
-    </button>
+    <!-- Remplacer le bouton retour par un input centré -->
+    <div class="flex justify-center pt-8 pb-4 bg-gray-900 border-b border-gray-800">
+        <input
+            type="text"
+            placeholder="Rechercher dans les paramètres"
+            class="w-3/4 bg-gray-800 text-gray-200 placeholder-gray-500 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 transition text-center"
+        />
+    </div>
     <!-- En-tête utilisateur -->
-    <div class="flex flex-col items-center pt-16 pb-6 border-b border-gray-800 relative">
+    <div class="flex flex-col items-center pt-8 pb-6 border-b border-gray-800 relative">
         <div class="relative">
             <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="avatar" class="w-24 h-24 rounded-full border-4 border-gray-700 shadow-lg">
             <span class="absolute bottom-2 right-2 w-5 h-5 bg-green-500 border-2 border-gray-900 rounded-full"></span>
