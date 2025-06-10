@@ -503,22 +503,30 @@
     const sidebarChats = document.getElementById('sidebarChats');
     const sidebarSettings = document.getElementById('sidebarSettings');
 
-    // Fix: ensure only one is visible at a time on load
+    // Toujours n'afficher qu'un seul panneau
+    function showPanel(panel) {
+        if (panel === 'settings') {
+            sidebarChats.classList.add('hidden');
+            sidebarSettings.classList.remove('hidden');
+        } else {
+            sidebarSettings.classList.add('hidden');
+            sidebarChats.classList.remove('hidden');
+        }
+    }
+
+    // Initialisation à l'ouverture
     if (sidebarChats && sidebarSettings) {
-        sidebarChats.classList.remove('hidden');
-        sidebarSettings.classList.add('hidden');
+        showPanel('chats');
     }
 
     if (sidebarChatIcon && sidebarChats && sidebarSettings) {
         sidebarChatIcon.addEventListener('click', () => {
-            sidebarSettings.classList.add('hidden');
-            sidebarChats.classList.remove('hidden');
+            showPanel('chats');
         });
     }
     if (settingsIcon && sidebarChats && sidebarSettings) {
         settingsIcon.addEventListener('click', () => {
-            sidebarChats.classList.add('hidden');
-            sidebarSettings.classList.remove('hidden');
+            showPanel('settings');
         });
     }
 
