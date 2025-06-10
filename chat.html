@@ -84,82 +84,92 @@
 
         <!-- Chat list/sidebar -->
         <div id="sidebarChats" class="w-[600px] bg-gray-900 flex flex-col">
-            <!-- Header utilisateur -->
-            <div class="flex items-center px-6 py-6 border-b border-gray-800">
-                <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="avatar" class="w-16 h-16 rounded-full mr-4 object-cover">
-                <div>
-                    <div class="flex items-center space-x-2">
-                        <span class="text-white font-semibold text-lg">Bachir_deV</span>
-                        <span class="text-xl">💻❌🇸🇳🖤</span>
+            <!-- Header -->
+            <div class="bg-gray-900 p-4 flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
+                        <i class="fab fa-whatsapp text-white text-xl"></i>
                     </div>
-                    <div class="text-gray-400 text-sm mt-1">Salut ! J'utilise WhatsApp.</div>
+                    <h1 class="text-white text-xl font-medium">WhatsApp</h1>
+                </div>
+                <div class="flex items-center space-x-8 text-gray-300 relative">
+                    <svg viewBox="0 0 24 24" height="24" width="24" preserveAspectRatio="xMidYMid meet" class="" fill="none"><title>new-chat-outline</title><path d="M9.53277 12.9911H11.5086V14.9671C11.5086 15.3999 11.7634 15.8175 12.1762 15.9488C12.8608 16.1661 13.4909 15.6613 13.4909 15.009V12.9911H15.4672C15.9005 12.9911 16.3181 12.7358 16.449 12.3226C16.6659 11.6381 16.1606 11.0089 15.5086 11.0089H13.4909V9.03332C13.4909 8.60007 13.2361 8.18252 12.8233 8.05119C12.1391 7.83391 11.5086 8.33872 11.5086 8.991V11.0089H9.49088C8.83941 11.0089 8.33411 11.6381 8.55097 12.3226C8.68144 12.7358 9.09947 12.9911 9.53277 12.9911Z" fill="currentColor"></path><path fill-rule="evenodd" clip-rule="evenodd" d="M0.944298 5.52617L2.99998 8.84848V17.3333C2.99998 18.8061 4.19389 20 5.66665 20H19.3333C20.8061 20 22 18.8061 22 17.3333V6.66667C22 5.19391 20.8061 4 19.3333 4H1.79468C1.01126 4 0.532088 4.85997 0.944298 5.52617ZM4.99998 8.27977V17.3333C4.99998 17.7015 5.29845 18 5.66665 18H19.3333C19.7015 18 20 17.7015 20 17.3333V6.66667C20 6.29848 19.7015 6 19.3333 6H3.58937L4.99998 8.27977Z" fill="currentColor"></path></svg>
+                    <i id="menuBtn" class="fas fa-ellipsis-v cursor-pointer"></i>
+                    <!-- Menu contextuel caché, positionné juste sous l'icône -->
+                    <div id="contextMenu" class="hidden absolute left-8 top-8 bg-gray-900 border border-gray-700 rounded-xl shadow-lg w-64 z-50">
+                        <ul class="py-2">
+                            <li>
+                                <a href="#" class="flex items-center px-5 py-3 hover:bg-gray-800 text-gray-200">
+                                    <i class="fas fa-users mr-3"></i> Nouveau groupe
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="flex items-center px-5 py-3 hover:bg-gray-800 text-gray-200">
+                                    <i class="fas fa-star mr-3"></i> Messages importants
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="flex items-center px-5 py-3 hover:bg-gray-800 text-gray-200">
+                                    <i class="fas fa-check-square mr-3"></i> Sélectionner les discussions
+                                </a>
+                            </li>
+                            <li>
+                                <hr class="my-2 border-gray-700">
+                            </li>
+                            <li>
+                                <a href="#" id="logoutBtn" class="flex items-center px-5 py-3 hover:bg-red-400 text-gray-200">
+                                    <i class="fas fa-sign-out-alt mr-3"></i> Déconnexion
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-            <!-- Liste des paramètres -->
-            <div class="flex-1 px-6 py-6">
-                <div class="space-y-6">
-                    <div>
-                        <div class="flex items-center space-x-4">
-                            <i class="fas fa-key text-gray-300"></i>
-                            <div>
-                                <div class="text-white font-medium">Compte</div>
-                                <div class="text-gray-400 text-sm">Notifications de sécurité, informations de compte</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="flex items-center space-x-4">
-                            <i class="fas fa-lock text-gray-300"></i>
-                            <div>
-                                <div class="text-white font-medium">Confidentialité</div>
-                                <div class="text-gray-400 text-sm">Contacts bloqués, messages éphémères</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="flex items-center space-x-4">
-                            <i class="fas fa-comments text-gray-300"></i>
-                            <div>
-                                <div class="text-white font-medium">Discussions</div>
-                                <div class="text-gray-400 text-sm">Thème, fond d'écran, paramètres des discussions</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="flex items-center space-x-4">
-                            <i class="fas fa-bell text-gray-300"></i>
-                            <div>
-                                <div class="text-white font-medium">Notifications</div>
-                                <div class="text-gray-400 text-sm">Notifications de messages</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="flex items-center space-x-4">
-                            <i class="fas fa-keyboard text-gray-300"></i>
-                            <div>
-                                <div class="text-white font-medium">Raccourcis clavier</div>
-                                <div class="text-gray-400 text-sm">Actions rapides</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="flex items-center space-x-4">
-                            <i class="fas fa-question-circle text-gray-300"></i>
-                            <div>
-                                <div class="text-white font-medium">Aide</div>
-                                <div class="text-gray-400 text-sm">Pages d'aide, contactez-nous, politique de confidentialité</div>
-                            </div>
-                        </div>
-                    </div>
+
+            <!-- Search -->
+            <div class="p-3 bg-gray-900">
+                <div class="relative">
+                    <i class="fas fa-search absolute left-3 top-[8px] text-gray-400 text-sm"></i>
+                    <input type="text" placeholder="Rechercher ou démarrer une discussion" 
+                           class="w-full bg-gray-600 text-white placeholder-gray-400 pl-10 pr-4 py-2 rounded-lg text-sm focus:outline-none focus:bg-gray-500">
                 </div>
-                <!-- Bouton déconnexion -->
-                <div class="mt-10">
-                    <button class="flex items-center text-red-500 hover:text-red-400 font-medium space-x-2">
-                        <i class="fas fa-sign-out-alt"></i>
-                        <span>Se déconnecter</span>
-                    </button>
+            </div>
+
+            <!-- Tabs -->
+            <div class="flex bg-gray-900 px-3 pb-2 space-x-2">
+                <button class="px-4 py-2 rounded-full border border-gray-500 text-gray-400 text-sm font-medium transition-colors duration-150">Toutes</button>
+                <button class="px-4 py-2 rounded-full border border-gray-500 bg-green-900 text-green-200 text-sm font-medium transition-colors duration-150">Non lues</button>
+                <button class="px-4 py-2 rounded-full border border-gray-500 text-gray-400 text-sm font-medium transition-colors duration-150">Favoris</button>
+                <button class="px-4 py-2 rounded-full border border-gray-500 text-gray-400 text-sm font-medium transition-colors duration-150">Groupes</button>
+            </div>
+
+            <!-- Notification Banner -->
+            <div class="bg-green-900 p-4 m-3 rounded-xl flex items-start space-x-4 relative">
+                <div class="w-9 h-9 flex items-center justify-center bg-green-600 rounded-full mt-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bell-slash-fill text-black" viewBox="0 0 16 16">
+                        <path d="M5.164 14H15c-1.5-1-2-5.902-2-7q0-.396-.06-.776zm6.288-10.617A5 5 0 0 0 8.995 2.1a1 1 0 1 0-1.99 0A5 5 0 0 0 3 7c0 .898-.335 4.342-1.278 6.113zM10 15a2 2 0 1 1-4 0zm-9.375.625a.53.53 0 0 0 .75.75l14.75-14.75a.53.53 0 0 0-.75-.75z"/>
+                    </svg>
                 </div>
+                <div class="flex-1 text-white">
+                    <div class="font-medium mb-1">Activer les notifications</div>
+                    <div class="text-green-100">Recevez des notifications pour les nouveaux messages sur votre ordinateur.</div>
+                    <div class="text-green-200 mt-1 cursor-pointer text-sm">Activer les notifications sur le bureau <span class="inline-block align-middle">&gt;</span></div>
+                </div>
+                <button class="absolute top-3 right-3 text-gray-200 hover:text-green-200 text-lg">
+                    &times;
+                </button>
+            </div>
+
+            <!-- Chat List -->
+            <div class="flex-1 overflow-y-auto scrollbar-thin">
+                <!-- ...liste des chats ici comme avant... -->
+                <!-- Archives -->
+                <div class="px-10 py-3 flex items-center space-x-3 text-gray-300 border-gray-600">
+                    <i class="fas fa-archive"></i>
+                    <span class="text-sm">Archivées</span>
+                </div>
+                <!-- ...chats... -->
+                <!-- ...existing code for chat items... -->
             </div>
         </div>
 
