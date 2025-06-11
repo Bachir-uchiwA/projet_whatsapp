@@ -1,4 +1,4 @@
-const apiUrl = import.meta.env.VITE_API_URL || '/api';
+const apiUrl = "https://projet-json-server-4.onrender.com";
 
 export async function checkAuth() {
     // Get session ID from URL
