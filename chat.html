@@ -100,7 +100,7 @@
                         <i class="fas fa-ellipsis-v"></i>
                     </button>
                     <!-- Menu contextuel caché, positionné juste sous l'icône -->
-                    <div id="contextMenu" class="hidden absolute right-0 mt-2 min-w-[250px] bg-[#18191a] rounded-2xl shadow-2xl border border-[#23272b] z-50">
+                    <div id="contextMenu" class="hidden absolute right-0 top-full mt-2 min-w-[250px] bg-[#18191a] rounded-2xl shadow-2xl border border-[#23272b] z-50">
                         <ul class="py-2 m-0 p-0">
                             <li>
                                 <a href="#" class="flex items-center px-6 py-3 text-[#e4e6eb] text-[15px] rounded-xl transition-colors duration-150 hover:bg-[#23272b] hover:text-white">
@@ -126,8 +126,7 @@
                                 </a>
                             </li>
                         </ul>
-                    </div>
-                </div>
+                    </div>                </div>
             </div>
 
             <!-- Search -->
@@ -476,23 +475,4 @@
         </div>
     </div>
 </body>
-<script>
-    // Gestion du menu contextuel (menuBtn)
-    const menuBtn = document.getElementById('menuBtn');
-    const contextMenu = document.getElementById('contextMenu');
-
-    menuBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        contextMenu.classList.toggle('hidden');
-    });
-
-    // Fermer le menu si on clique ailleurs
-    document.addEventListener('click', (e) => {
-        if (!contextMenu.classList.contains('hidden')) {
-            if (!contextMenu.contains(e.target) && e.target !== menuBtn) {
-                contextMenu.classList.add('hidden');
-            }
-        }
-    });
-</script>
 </html>

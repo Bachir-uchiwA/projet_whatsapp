@@ -5,15 +5,12 @@ console.log("chat.js chargé !");
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log("DOM entièrement chargé !");
+    
+    // Gestion navigation sidebar
     const settingsIcon = document.getElementById('settingsIcon');
     const sidebarChats = document.getElementById('sidebarChats');
     const sidebarSettings = document.getElementById('sidebarSettings');
     const sidebarChatIcon = document.getElementById('sidebarChatIcon');
-
-    console.log("settingsIcon:", settingsIcon);
-    console.log("sidebarChats:", sidebarChats);
-    console.log("sidebarSettings:", sidebarSettings);
-    console.log("sidebarChatIcon:", sidebarChatIcon);
 
     if (settingsIcon && sidebarChats && sidebarSettings) {
         settingsIcon.addEventListener('click', () => {
@@ -22,6 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
             sidebarSettings.classList.remove('hidden');
         });
     }
+    
     if (sidebarChatIcon && sidebarChats && sidebarSettings) {
         sidebarChatIcon.addEventListener('click', () => {
             console.log("Clic sur sidebarChatIcon");
@@ -30,23 +28,62 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Ajout gestion menu contextuel (menuBtn)
+    // Gestion menu contextuel - VERSION AMÉLIORÉE
     const menuBtn = document.getElementById('menuBtn');
     const contextMenu = document.getElementById('contextMenu');
 
+    console.log("menuBtn:", menuBtn);
+    console.log("contextMenu:", contextMenu);
+
     if (menuBtn && contextMenu) {
         menuBtn.addEventListener('click', (e) => {
+            e.preventDefault();
             e.stopPropagation();
-            contextMenu.classList.toggle('hidden');
+            console.log("Clic sur menuBtn - Toggle menu");
+            
+            // Toggle du menu
+            const isHidden = contextMenu.classList.contains('hidden');
+            if (isHidden) {
+                contextMenu.classList.remove('hidden');
+                console.log("Menu affiché");
+            } else {
+                contextMenu.classList.add('hidden');
+                console.log("Menu caché");
+            }
         });
 
         // Fermer le menu si clic en dehors
         document.addEventListener('click', (e) => {
             if (!contextMenu.classList.contains('hidden')) {
                 // Si le clic n'est pas sur le menu ni sur le bouton
-                if (!contextMenu.contains(e.target) && e.target !== menuBtn) {
+                if (!contextMenu.contains(e.target) && !menuBtn.contains(e.target)) {
                     contextMenu.classList.add('hidden');
+                    console.log("Menu fermé (clic extérieur)");
                 }
+            }
+        });
+
+        // Gestion déconnexion depuis le menu contextuel
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
+                    window.location.href = '/';
+                }
+            });
+        }
+    } else {
+        console.error("menuBtn ou contextMenu non trouvé !");
+    }
+
+    // Gestion déconnexion depuis les paramètres
+    const settingsLogout = document.getElementById('settingsLogout');
+    if (settingsLogout) {
+        settingsLogout.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
+                window.location.href = '/';
             }
         });
     }
