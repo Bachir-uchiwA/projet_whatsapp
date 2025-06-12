@@ -7,21 +7,32 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log("DOM entièrement chargé !");
     
     // Gestion navigation sidebar
-    const settingsIcon = document.getElementById('settingsIcon');
     const sidebarSettings = document.getElementById('sidebarSettings');
+    const sidebarChats = document.getElementById('sidebarChats');
+    const settingsIcon = document.getElementById('settingsIcon');
     const sidebarChatIcon = document.getElementById('sidebarChatIcon');
 
-    if (settingsIcon && sidebarSettings) {
+    // Sauvegarde pour restauration
+    let sidebarChatsBackup = null;
+
+    // Afficher les paramètres et masquer la liste des chats
+    if (settingsIcon && sidebarSettings && sidebarChats) {
         settingsIcon.addEventListener('click', () => {
-            console.log("Clic sur settingsIcon");
+            // Sauvegarde le contenu de sidebarChats si pas déjà fait
+            if (!sidebarChatsBackup) {
+                sidebarChatsBackup = sidebarChats.innerHTML;
+            }
+            // Remplace le contenu du panneau chat par le panneau paramètres
+            sidebarChats.classList.add('hidden');
             sidebarSettings.classList.remove('hidden');
         });
     }
-    
-    if (sidebarChatIcon && sidebarSettings) {
+
+    // Bouton retour vers la liste des chats depuis les paramètres
+    if (sidebarChatIcon && sidebarSettings && sidebarChats) {
         sidebarChatIcon.addEventListener('click', () => {
-            console.log("Clic sur sidebarChatIcon");
             sidebarSettings.classList.add('hidden');
+            sidebarChats.classList.remove('hidden');
         });
     }
 
@@ -250,7 +261,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Nouvelle discussion : bouton + (remplace sidebarChats)
-    const sidebarChats = document.getElementById('sidebarChats');
     let sidebarChatsBackup = null;
 
     // Remplace le <svg> par un <button> dans le HTML (voir chat.html)
