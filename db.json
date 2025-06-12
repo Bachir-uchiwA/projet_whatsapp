@@ -1,0 +1,143 @@
+{
+  "users": [
+    {
+      "phone": "775626363",
+      "country": "SN",
+      "id": "9c08"
+    },
+    {
+      "phone": "0612345678",
+      "country": "FR",
+      "id": "1981"
+    },
+    {
+      "phone": "4155551234",
+      "country": "US",
+      "id": "a3f2"
+    },
+    {
+      "phone": "4155551239",
+      "country": "US",
+      "id": "5c8b"
+    }
+  ],
+  "sessions": [],
+  "messages": [
+    {
+      "id": "msg_1",
+      "chatId": "chat_1",
+      "senderId": "1981",
+      "content": "🔇 0:15",
+      "type": "audio",
+      "timestamp": "2024-01-15T16:45:00Z",
+      "status": "delivered"
+    },
+    {
+      "id": "msg_2",
+      "chatId": "chat_2",
+      "senderId": "a3f2",
+      "content": "Bilalahi boy mais dara gérer ko rekk keine doula wahi",
+      "type": "text",
+      "timestamp": "2024-01-15T16:25:00Z",
+      "status": "read"
+    },
+    {
+      "id": "msg_3",
+      "chatId": "chat_3",
+      "senderId": "9c08",
+      "content": "wali Astou mangi layy nieuw send",
+      "type": "text",
+      "timestamp": "2024-01-15T16:43:00Z",
+      "status": "sent"
+    },
+    {
+      "id": "msg_4",
+      "chatId": "chat_1",
+      "senderId": "9c08",
+      "content": "Salut Fatoumata ! Comment ça va ?",
+      "type": "text",
+      "timestamp": "2024-01-15T16:40:00Z",
+      "status": "read"
+    },
+    {
+      "id": "msg_5",
+      "chatId": "chat_2",
+      "senderId": "9c08",
+      "content": "Hey LeX ! Quoi de neuf ?",
+      "type": "text",
+      "timestamp": "2024-01-15T16:20:00Z",
+      "status": "read"
+    },
+    {
+      "id": "msg_6",
+      "chatId": "chat_1",
+      "senderId": "1981",
+      "content": "Salut Bachir ! Ça va bien merci, et toi ?",
+      "type": "text",
+      "timestamp": "2024-01-15T16:41:00Z",
+      "status": "read"
+    },
+    {
+      "id": "msg_7",
+      "chatId": "chat_2",
+      "senderId": "a3f2",
+      "content": "Ça va mon reuf ! Tu fais quoi ce soir ?",
+      "type": "text",
+      "timestamp": "2024-01-15T16:22:00Z",
+      "status": "read"
+    },
+    {
+      "id": "msg_8",
+      "chatId": "chat_3",
+      "senderId": "5c8b",
+      "content": "D'accord grand frère ! À tout à l'heure 😊",
+      "type": "text",
+      "timestamp": "2024-01-15T16:44:00Z",
+      "status": "delivered"
+    }
+  ],
+  "chats": [
+    {
+      "id": "chat_1",
+      "participants": ["9c08", "1981"],
+      "type": "private",
+      "lastMessage": {
+        "id": "msg_1",
+        "content": "🔇 0:15",
+        "senderId": "1981",
+        "timestamp": "2024-01-15T16:45:00Z",
+        "type": "audio"
+      },
+      "unreadCount": 1,
+      "createdAt": "2024-01-10T10:00:00Z"
+    },
+    {
+      "id": "chat_2",
+      "participants": ["9c08", "a3f2"],
+      "type": "private",
+      "lastMessage": {
+        "id": "msg_2",
+        "content": "Bilalahi boy mais dara gérer ko rekk keine doula wahi",
+        "senderId": "a3f2",
+        "timestamp": "2024-01-15T16:25:00Z",
+        "type": "text"
+      },
+      "unreadCount": 0,
+      "createdAt": "2024-01-10T11:00:00Z"
+    },
+    {
+      "id": "chat_3",
+      "participants": ["9c08", "5c8b"],
+      "type": "private",
+      "lastMessage": {
+        "id": "msg_3",
+        "content": "wali Astou mangi layy nieuw send",
+        "senderId": "9c08",
+        "timestamp": "2024-01-15T16:43:00Z",
+        "type": "text"
+      },
+      "unreadCount": 0,
+      "createdAt": "2024-01-10T12:00:00Z"
+    }
+  ]
+}
