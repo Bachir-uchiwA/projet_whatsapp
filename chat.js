@@ -104,7 +104,7 @@ async function saveMessage(chatId, messageText, sender = 'me') {
                 lastMessageTime: new Date().toISOString()
             })
         });
-        
+         
         return savedMessage;
     } catch (error) {
         console.error('Erreur lors de la sauvegarde du message:', error);
