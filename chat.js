@@ -322,8 +322,6 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <div class="flex items-center mb-4">
                                         <svg class="w-5 h-5 text-gray-500 mr-4" fill="currentColor" viewBox="0 0 20 20">
                                             <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
-                                        </svg>
-                                        <span class="text-gray-400 text-sm">Prénom</span>
                                     </div>
                                     <input 
                                         type="text" 
@@ -374,10 +372,82 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (backToNewChat) {
                         backToNewChat.addEventListener('click', function () {
                             // Recharge la vue "Nouvelle discussion"
-                            if (sidebarChatsBackup) {
-                                sidebarChats.innerHTML = sidebarChatsBackup;
-                                sidebarChatsBackup = null;
-                                window.location.reload();
+                            // On ne recharge pas tout, on restaure juste la vue précédente
+                            sidebarChats.innerHTML = `
+                                <div class="flex flex-col h-full bg-gray-900" id="newChatPanel">
+                                    <!-- Header -->
+                                    <div class="flex items-center p-4 bg-gray-800">
+                                        <button id="backToChats" class="mr-4 focus:outline-none">
+                                            <i class="fas fa-arrow-left text-gray-300 text-xl"></i>
+                                        </button>
+                                        <h1 class="text-lg font-medium text-gray-200">Nouvelle discussion</h1>
+                                    </div>
+                                    <!-- Search Bar -->
+                                    <div class="px-4 py-3">
+                                        <div class="relative">
+                                            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm"></i>
+                                            <input type="text" placeholder="Rechercher un nom ou un numéro" 
+                                                class="w-full bg-gray-800 text-gray-300 pl-10 pr-4 py-2 rounded-lg placeholder-gray-500 text-sm border-none focus:outline-none focus:ring-1 focus:ring-green-500">
+                                        </div>
+                                    </div>
+                                    <!-- Action Items -->
+                                    <div class="px-4">
+                                        <div class="flex items-center py-3" id="addContactBtn">
+                                            <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center mr-4">
+                                                <i class="fas fa-user-plus text-white text-sm"></i>
+                                            </div>
+                                            <span class="text-gray-200 text-base">Nouveau contact</span>
+                                        </div>
+                                        <div class="flex items-center py-3">
+                                            <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center mr-4">
+                                                <i class="fas fa-users text-white text-sm"></i>
+                                            </div>
+                                            <span class="text-gray-200 text-base">Nouveau groupe</span>
+                                        </div>
+                                        <div class="flex items-center py-3">
+                                            <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center mr-4">
+                                                <i class="fas fa-users text-white text-sm"></i>
+                                            </div>
+                                            <span class="text-gray-200 text-base">Nouvelle communauté</span>
+                                        </div>
+                                    </div>
+                                    <!-- Contacts Section -->
+                                    <div class="px-4 mt-6">
+                                        <h2 class="text-gray-400 text-sm font-medium mb-4">Contacts sur WhatsApp</h2>
+                                        <div class="flex items-center py-2">
+                                            <div class="w-10 h-10 rounded-full overflow-hidden mr-4">
+                                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face" 
+                                                    alt="Profile" class="w-full h-full object-cover">
+                                            </div>
+                                            <div class="flex-1">
+                                                <div class="text-gray-200 text-base">BACHIR IIR💻🏠 (vous)</div>
+                                                <div class="text-gray-400 text-sm">Envoyez-vous un message</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Bottom Section -->
+                                    <div class="px-4 mt-8">
+                                        <div class="text-gray-500 text-sm">#</div>
+                                    </div>
+                                </div>
+                            `;
+                            // Réattache les listeners pour retour et "Nouveau contact"
+                            const backBtn = document.getElementById('backToChats');
+                            if (backBtn) {
+                                backBtn.addEventListener('click', function () {
+                                    if (sidebarChatsBackup) {
+                                        sidebarChats.innerHTML = sidebarChatsBackup;
+                                        sidebarChatsBackup = null;
+                                        window.location.reload();
+                                    }
+                                });
+                            }
+                            const addContactBtn2 = document.getElementById('addContactBtn');
+                            if (addContactBtn2) {
+                                addContactBtn2.addEventListener('click', function () {
+                                    // Relance le click pour afficher le formulaire
+                                    addContactBtn.click();
+                                });
                             }
                         });
                     }
