@@ -88,30 +88,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // NOUVELLE FONCTIONNALITÉ : Gestion du clic sur l'icône "nouvelle discussion"
-    const newChatIcon = document.getElementById('newChatIcon');
-    const sidebarContainer = document.querySelector('#sidebarChats');
-    
-    console.log("Icône nouvelle discussion:", newChatIcon);
-    console.log("Sidebar container:", sidebarContainer);
-    
-    if (newChatIcon && sidebarContainer) {
-        newChatIcon.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            console.log("Clic sur l'icône nouvelle discussion");
-            
-            // Remplacer le contenu de la sidebar par la page nouvelle discussion
-            sidebarContainer.innerHTML = createNewChatInterface();
-            
-            // Ajouter les event listeners pour la nouvelle interface
-            setupNewChatInterface();
-        });
-    } else {
-        console.error("Icône nouvelle discussion ou sidebar container non trouvé !");
-    }
-
-    // FONCTIONNALITÉ EXISTANTE : Gestion des clics sur les chats
+    // NOUVELLE FONCTIONNALITÉ : Gestion des clics sur les chats
     const chatItems = document.querySelectorAll('.flex.items-center.p-3.hover\\:bg-gray-700.cursor-pointer.border-gray-600');
     const mainContent = document.querySelector('.flex-1.bg-gray-800.flex.items-center.justify-center');
 
@@ -135,168 +112,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 setupChatInterface();
             });
         });
-    }
-
-    function createNewChatInterface() {
-        return `
-            <!-- Header -->
-            <div class="flex items-center p-4 bg-gray-800">
-                <i class="fas fa-arrow-left text-gray-300 text-xl mr-4 cursor-pointer" id="backToChats"></i>
-                <h1 class="text-lg font-medium text-gray-200">Nouvelle discussion</h1>
-            </div>
-
-            <!-- Search Bar -->
-            <div class="px-4 py-3">
-                <div class="relative">
-                    <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm"></i>
-                    <input type="text" id="contactSearch" placeholder="Rechercher un nom ou un numéro"
-                            class="w-full bg-gray-800 text-gray-300 pl-10 pr-4 py-2 rounded-lg placeholder-gray-500 text-sm border-none focus:outline-none focus:ring-1 focus:ring-green-500">
-                </div>
-            </div>
-
-            <!-- Action Items -->
-            <div class="px-4">
-                <!-- Nouveau groupe -->
-                <div class="flex items-center py-3 cursor-pointer hover:bg-gray-800 rounded-lg px-2" id="newGroup">
-                    <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center mr-4">
-                        <i class="fas fa-users text-white text-sm"></i>
-                    </div>
-                    <span class="text-gray-200 text-base">Nouveau groupe</span>
-                </div>
-
-                <!-- Nouveau contact -->
-                <div class="flex items-center py-3 cursor-pointer hover:bg-gray-800 rounded-lg px-2" id="newContact">
-                    <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center mr-4">
-                        <i class="fas fa-user-plus text-white text-sm"></i>
-                    </div>
-                    <span class="text-gray-200 text-base">Nouveau contact</span>
-                </div>
-
-                <!-- Nouvelle communauté -->
-                <div class="flex items-center py-3 cursor-pointer hover:bg-gray-800 rounded-lg px-2" id="newCommunity">
-                    <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center mr-4">
-                        <i class="fas fa-users text-white text-sm"></i>
-                    </div>
-                    <span class="text-gray-200 text-base">Nouvelle communauté</span>
-                </div>
-            </div>
-
-            <!-- Contacts Section -->
-            <div class="px-4 mt-6 flex-1 overflow-y-auto">
-                <h2 class="text-gray-400 text-sm font-medium mb-4">Contacts sur WhatsApp</h2>
-                
-                <!-- Contact Item - Vous -->
-                <div class="flex items-center py-2 cursor-pointer hover:bg-gray-800 rounded-lg px-2" data-contact="BACHIR IIR💻🏠 (vous)">
-                    <div class="w-10 h-10 rounded-full overflow-hidden mr-4">
-                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face"
-                              alt="Profile" class="w-full h-full object-cover">
-                    </div>
-                    <div class="flex-1">
-                        <div class="text-gray-200 text-base">BACHIR IIR💻🏠 (vous)</div>
-                        <div class="text-gray-400 text-sm">Envoyez-vous un message</div>
-                    </div>
-                </div>
-
-                <!-- Contacts supplémentaires -->
-                <div class="flex items-center py-2 cursor-pointer hover:bg-gray-800 rounded-lg px-2" data-contact="Fatoumata Ba">
-                    <div class="w-10 h-10 bg-pink-500 rounded-full flex items-center justify-center mr-4">
-                        <i class="fas fa-user text-white text-sm"></i>
-                    </div>
-                    <div class="flex-1">
-                        <div class="text-gray-200 text-base">Fatoumata Ba</div>
-                        <div class="text-gray-400 text-sm">+221 77 123 45 67</div>
-                    </div>
-                </div>
-
-                <div class="flex items-center py-2 cursor-pointer hover:bg-gray-800 rounded-lg px-2" data-contact="LeX🍻⚫🔥">
-                    <div class="w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center mr-4">
-                        <i class="fas fa-user text-white text-sm"></i>
-                    </div>
-                    <div class="flex-1">
-                        <div class="text-gray-200 text-base">LeX🍻⚫🔥</div>
-                        <div class="text-gray-400 text-sm">+221 77 987 65 43</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Bottom Section -->
-            <div class="px-4 py-4">
-                <div class="text-gray-500 text-sm">#</div>
-            </div>
-        `;
-    }
-
-    function setupNewChatInterface() {
-        // Bouton retour
-        const backButton = document.getElementById('backToChats');
-        if (backButton) {
-            backButton.addEventListener('click', () => {
-                console.log("Retour aux chats");
-                // Recharger la page pour revenir à l'état initial
-                window.location.reload();
-            });
-        }
-
-        // Recherche de contacts
-        const searchInput = document.getElementById('contactSearch');
-        const contactItems = document.querySelectorAll('[data-contact]');
-        
-        if (searchInput && contactItems.length > 0) {
-            searchInput.addEventListener('input', (e) => {
-                const searchTerm = e.target.value.toLowerCase();
-                
-                contactItems.forEach(item => {
-                    const contactName = item.getAttribute('data-contact').toLowerCase();
-                    if (contactName.includes(searchTerm)) {
-                        item.style.display = 'flex';
-                    } else {
-                        item.style.display = 'none';
-                    }
-                });
-            });
-        }
-
-        // Clic sur un contact pour démarrer une conversation
-        contactItems.forEach(item => {
-            item.addEventListener('click', () => {
-                const contactName = item.getAttribute('data-contact');
-                const contactAvatar = item.querySelector('img')?.src || null;
-                const contactBgColor = item.querySelector('.rounded-full')?.classList.toString().match(/bg-\w+-\d+/)?.[0] || 'bg-gray-600';
-                
-                console.log(`Démarrer conversation avec: ${contactName}`);
-                
-                // Revenir à la vue des chats et ouvrir la conversation
-                window.location.reload();
-                
-                // Note: Dans une vraie application, vous pourriez vouloir :
-                // 1. Sauvegarder l'état dans localStorage
-                // 2. Utiliser un système de routing
-                // 3. Gérer l'état de l'application de manière plus sophistiquée
-            });
-        });
-
-        // Actions pour nouveau groupe, contact, communauté
-        const newGroupBtn = document.getElementById('newGroup');
-        const newContactBtn = document.getElementById('newContact');
-        const newCommunityBtn = document.getElementById('newCommunity');
-
-        if (newGroupBtn) {
-            newGroupBtn.addEventListener('click', () => {
-                alert('Fonctionnalité "Nouveau groupe" à implémenter');
-            });
-        }
-
-        if (newContactBtn) {
-            newContactBtn.addEventListener('click', () => {
-                alert('Fonctionnalité "Nouveau contact" à implémenter');
-            });
-        }
-
-        if (newCommunityBtn) {
-            newCommunityBtn.addEventListener('click', () => {
-                alert('Fonctionnalité "Nouvelle communauté" à implémenter');
-            });
-        }
     }
 
     function createChatInterface(contactName, avatarSrc, bgColor) {
@@ -437,3 +252,5 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 });
+
+export {};
