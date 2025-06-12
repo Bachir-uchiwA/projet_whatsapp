@@ -9,17 +9,17 @@ export default defineConfig({
     postcss: './postcss.config.js'
   },
   server: {
-        proxy: {
-            '/api': {
-                target: 'https://projet-json-server-5.onrender.com',
-                changeOrigin: true,
-                rewrite: (path) => path.replace(/^\/api/, '')
-            }
-        },
-        hmr: {
-            overlay: false // Disable error overlay
-        }
+    proxy: {
+      '/api': {
+        target: 'https://projet-json-server-4.onrender.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, '')
+      }
+    },
+    hmr: {
+      overlay: false // Disable error overlay
     }
+  }
 })
 
 

@@ -7,7 +7,6 @@ export default async function handler(req, res) {
     return;
   }
   const filePath = path.join(process.cwd(), 'db.json');
-  // (Ce fichier lit en local, pas d'appel à l'API externe. Rien à changer.)
   const data = await fs.readFile(filePath, 'utf8');
   res.setHeader('Content-Type', 'application/json');
   res.status(200).send(data);
