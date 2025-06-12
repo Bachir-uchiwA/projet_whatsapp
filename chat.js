@@ -46,15 +46,20 @@ async function getContacts() {
     return await apiRequest('/contacts');
 }
 
-// Fonction pour créer ou récupérer un chat (version corrigée)
+// Fonction pour créer ou récupérer un chat (avec plus de logs)
 async function createOrGetChat(contactId, contactName = null, contactPhone = null) {
     try {
+        console.log('createOrGetChat appelé avec:', { contactId, contactName, contactPhone });
+        
         // Vérifier si un chat existe déjà avec ce contact
         const existingChats = await apiRequest('/chats');
+        console.log('Chats existants:', existingChats);
+        
         let chat = existingChats.find(c => c.contactId === contactId);
+        console.log('Chat trouvé:', chat);
         
         if (!chat && contactName && contactPhone) {
-            // Créer un nouveau chat seulement si on a les informations du contact
+            // Créer un nouveau chat
             const chatData = {
                 contactId: contactId,
                 contactName: contactName,
@@ -64,6 +69,8 @@ async function createOrGetChat(contactId, contactName = null, contactPhone = nul
                 unreadCount: 0,
                 createdAt: new Date().toISOString()
             };
+            
+            console.log('Création d\'un nouveau chat avec les données:', chatData);
             
             chat = await apiRequest('/chats', {
                 method: 'POST',
@@ -180,14 +187,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const settingsIcon = document.getElementById('settingsIcon');
     const sidebarChatIcon = document.getElementById('sidebarChatIcon');
 
-    // Sauvegarde pour restauration (une seule instance globale)
+    // Sauvegarde pour restauration
     let sidebarChatsBackup = null;
     let newChatBackup = null;
 
-    // Charger les chats actifs au démarrage
-    setTimeout(() => {
-        loadAndDisplayChats();
-    }, 500);
+    // CHARGER LES CHATS IMMÉDIATEMENT
+    console.log('Chargement initial des chats...');
+    loadAndDisplayChats();
 
     // Afficher les paramètres et masquer la liste des chats
     if (settingsIcon && sidebarSettings && sidebarChats) {
@@ -806,7 +812,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Fonction pour gérer les clics sur les contacts (version finale)
+    // Fonction pour gérer les clics sur les contacts (version corrigée)
     function setupContactClickListeners() {
         const contactItems = document.querySelectorAll('.contact-item');
         const mainContent = document.querySelector('.flex-1.bg-gray-800.flex.items-center.justify-center');
@@ -819,30 +825,163 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 console.log('Contact sélectionné:', { contactId, contactName, contactPhone });
                 
-                // Créer ou récupérer le chat avec ce contact
-                const chat = await createOrGetChat(contactId, contactName, contactPhone);
-                
-                // Afficher l'interface de chat
-                if (mainContent) {
-                    mainContent.innerHTML = createChatInterface(contactName, null, 'bg-blue-500', contactId);
-                    setupChatInterface(contactId);
-                }
-                
-                // Retourner à la vue principale
-                if (sidebarChatsBackup) {
-                    sidebarChats.innerHTML = sidebarChatsBackup;
+                try {
+                    // Créer ou récupérer le chat avec ce contact
+                    const chat = await createOrGetChat(contactId, contactName, contactPhone);
+                    console.log('Chat créé/récupéré:', chat);
                     
-                    // Recharger la liste des chats après un court délai
-                    setTimeout(() => {
-                        loadAndDisplayChats();
-                    }, 200);
+                    // Afficher l'interface de chat
+                    if (mainContent) {
+                        mainContent.innerHTML = createChatInterface(contactName, null, 'bg-blue-500', contactId);
+                        setupChatInterface(contactId);
+                    }
+                    
+                    // Retourner à la vue principale
+                    if (sidebarChatsBackup) {
+                        sidebarChats.innerHTML = sidebarChatsBackup;
+                        
+                        // FORCER le rechargement des chats
+                        console.log('Rechargement forcé des chats...');
+                        setTimeout(() => {
+                            loadAndDisplayChats();
+                        }, 500);
+                    }
+                } catch (error) {
+                    console.error('Erreur lors de la création du chat:', error);
+                    alert('Erreur lors de la création de la discussion');
                 }
             });
         });
     }
 
+    // Fonction pour charger et afficher les chats actifs dans la sidebar
+    async function loadAndDisplayChats() {
+        try {
+            console.log('Chargement des chats actifs...');
+            const chats = await apiRequest('/chats?_sort=lastMessageTime&_order=desc');
+            console.log('Chats récupérés:', chats);
+            
+            const chatListContainer = document.querySelector('.flex-1.overflow-y-auto.scrollbar-thin');
+            if (chatListContainer) {
+                // Commencer avec la section "Archivées"
+                let chatsHTML = `
+                    <!-- Archives -->
+                    <div class="px-10 py-3 flex items-center space-x-3 text-gray-300 border-gray-600">
+                        <i class="fas fa-archive"></i>
+                        <span class="text-sm">Archivées</span>
+                    </div>
+                `;
+                
+                // Ajouter les chats réels SEULEMENT
+                if (chats && chats.length > 0) {
+                    chats.forEach(chat => {
+                        const timeAgo = getTimeAgo(chat.lastMessageTime);
+                        const hasUnread = chat.unreadCount > 0;
+                        const displayName = chat.contactName || 'Contact';
+                        const lastMessage = chat.lastMessage || 'Nouvelle conversation';
+                        
+                        chatsHTML += `
+                            <div class="flex items-center p-3 hover:bg-gray-700 cursor-pointer border-gray-600 chat-item" 
+                                 data-contact-id="${chat.contactId}"
+                                 data-chat-id="${chat.id}"
+                                 data-contact-name="${displayName}"
+                                 data-contact-phone="${chat.contactPhone}">
+                                <div class="w-12 h-12 bg-blue-500 rounded-full flex-shrink-0 mr-3 overflow-hidden">
+                                    <i class="fas fa-user text-white"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center justify-between">
+                                        <div class="text-white font-medium text-sm truncate">${displayName}</div>
+                                        <div class="text-gray-400 text-xs">${timeAgo}</div>
+                                    </div>
+                                    <div class="flex items-center justify-between mt-1">
+                                        <div class="text-gray-400 text-sm truncate">✓ ${lastMessage}</div>
+                                        ${hasUnread ? `<div class="bg-green-500 text-white text-xs rounded-full w-8 h-8 flex items-center justify-center">${chat.unreadCount}</div>` : ''}
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    // Aucun chat, afficher un message
+                    chatsHTML += `
+                        <div class="text-center text-gray-500 text-sm py-8">
+                            <i class="fas fa-comments text-4xl mb-4 text-gray-600"></i>
+                            <p>Aucune discussion pour le moment</p>
+                            <p class="text-xs mt-2">Ajoutez un contact pour commencer à discuter</p>
+                        </div>
+                    `;
+                }
+                
+                // Remplacer tout le contenu
+                chatListContainer.innerHTML = chatsHTML;
+                
+                // Ajouter les event listeners
+                setupChatItemListeners();
+            }
+        } catch (error) {
+            console.error('Erreur lors du chargement des chats:', error);
+            
+            // Afficher une erreur dans la liste
+            const chatListContainer = document.querySelector('.flex-1.overflow-y-auto.scrollbar-thin');
+            if (chatListContainer) {
+                chatListContainer.innerHTML = `
+                    <div class="px-10 py-3 flex items-center space-x-3 text-gray-300 border-gray-600">
+                        <i class="fas fa-archive"></i>
+                        <span class="text-sm">Archivées</span>
+                    </div>
+                    <div class="text-center text-red-400 text-sm py-8">
+                        <i class="fas fa-exclamation-triangle text-4xl mb-4"></i>
+                        <p>Erreur lors du chargement des discussions</p>
+                    </div>
+                `;
+            }
+        }
+    }
+
     // Initialiser tous les event listeners au chargement
     initializeEventListeners();
 });
+
+// Fonction de test à appeler dans la console
+async function testChatCreation() {
+    console.log('=== TEST DE CRÉATION DE CHAT ===');
+    
+    // Test 1: Vérifier l'API
+    try {
+        const contacts = await apiRequest('/contacts');
+        console.log('Contacts disponibles:', contacts);
+        
+        const chats = await apiRequest('/chats');
+        console.log('Chats existants:', chats);
+    } catch (error) {
+        console.error('Erreur API:', error);
+        return;
+    }
+    
+    // Test 2: Créer un chat de test
+    const testChatData = {
+        contactId: 'test123',
+        contactName: 'Test Contact',
+        contactPhone: '+221771234567',
+        lastMessage: 'Message de test',
+        lastMessageTime: new Date().toISOString(),
+        unreadCount: 0,
+        createdAt: new Date().toISOString()
+    };
+    
+    try {
+        const newChat = await apiRequest('/chats', {
+            method: 'POST',
+            body: JSON.stringify(testChatData)
+        });
+        console.log('Chat de test créé:', newChat);
+        
+        // Recharger la liste
+        loadAndDisplayChats();
+    } catch (error) {
+        console.error('Erreur création chat test:', error);
+    }
+}
 
 export {};
