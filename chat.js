@@ -4,7 +4,7 @@
 console.log("chat.js chargé !");
 
 // Configuration de l'API
-const API_BASE_URL = 'https://projet-json-server-4.onrender.com';
+const API_BASE_URL = 'https://projet-json-server-5.onrender.com';
 
 // Fonctions utilitaires pour l'API
 async function apiRequest(endpoint, options = {}) {
@@ -719,8 +719,6 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <div class="flex items-center mb-4">
                                         <svg class="w-5 h-5 text-gray-500 mr-4" fill="currentColor" viewBox="0 0 20 20">
                                             <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
-                                        </svg>
-                                        <span class="text-gray-400 text-sm">Prénom</span>
                                     </div>
                                     <input 
                                         type="text" 
@@ -822,7 +820,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <div class="flex items-center mb-4">
                                     <svg class="w-5 h-5 text-gray-500 mr-4" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
-                                    </svg>
+                                    </div>
                                     <span class="text-gray-400 text-sm">Prénom</span>
                                 </div>
                                 <input 
