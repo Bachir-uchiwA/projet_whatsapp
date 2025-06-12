@@ -67,59 +67,56 @@ document.addEventListener('DOMContentLoaded', function() {
             const contacts = await getContacts();
             console.log('Contacts récupérés:', contacts);
             
-            // Trouver la section des contacts
-            const contactsSection = document.querySelector('#newChatPanel .px-4.mt-6');
-            if (contactsSection) {
+            // Trouver la section avec le # (Bottom Section)
+            const bottomSection = document.querySelector('#newChatPanel .px-4.mt-8');
+            if (bottomSection) {
                 let contactsHTML = `
-                    <h2 class="text-gray-400 text-sm font-medium mb-4">Contacts sur WhatsApp</h2>
-                    <div class="flex items-center py-2">
-                        <div class="w-10 h-10 rounded-full overflow-hidden mr-4">
-                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face" 
-                                alt="Profile" class="w-full h-full object-cover">
-                        </div>
-                        <div class="flex-1">
-                            <div class="text-gray-200 text-base">BACHIR IIR💻🏠 (vous)</div>
-                            <div class="text-gray-400 text-sm">Envoyez-vous un message</div>
-                        </div>
-                    </div>
+                    <div class="text-gray-500 text-sm">#</div>
                 `;
                 
-                // Ajouter les contacts sauvegardés
+                // Ajouter les contacts sauvegardés après le #
                 if (contacts && contacts.length > 0) {
+                    contactsHTML += `<div class="mt-4 space-y-2">`;
+                    
                     contacts.forEach(contact => {
                         const displayName = contact.fullName || `${contact.firstName || ''} ${contact.lastName || ''}`.trim() || contact.phone;
                         const phoneDisplay = `+${contact.country === 'SN' ? '221' : ''}${contact.phone}`;
                         
                         contactsHTML += `
-                            <div class="flex items-center py-2 cursor-pointer hover:bg-gray-800 rounded-lg px-2">
-                                <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center mr-4">
+                            <div class="flex items-center py-2 cursor-pointer hover:bg-gray-800 rounded-lg px-2 transition-colors">
+                                <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center mr-3">
                                     <i class="fas fa-user text-white text-sm"></i>
                                 </div>
                                 <div class="flex-1">
-                                    <div class="text-gray-200 text-base">${displayName}</div>
+                                    <div class="text-gray-200 text-base font-medium">${displayName}</div>
                                     <div class="text-gray-400 text-sm">${phoneDisplay}</div>
+                                </div>
+                                <div class="text-gray-500 text-xs">
+                                    <i class="fas fa-chevron-right"></i>
                                 </div>
                             </div>
                         `;
                     });
+                    
+                    contactsHTML += `</div>`;
                 } else {
                     contactsHTML += `
-                        <div class="text-gray-500 text-sm text-center py-4">
+                        <div class="mt-4 text-gray-500 text-sm text-center py-4 italic">
                             Aucun contact ajouté pour le moment
                         </div>
                     `;
                 }
                 
-                contactsSection.innerHTML = contactsHTML;
+                bottomSection.innerHTML = contactsHTML;
             }
         } catch (error) {
             console.error('Erreur lors du chargement des contacts:', error);
-            // Afficher un message d'erreur dans l'interface
-            const contactsSection = document.querySelector('#newChatPanel .px-4.mt-6');
-            if (contactsSection) {
-                contactsSection.innerHTML = `
-                    <h2 class="text-gray-400 text-sm font-medium mb-4">Contacts sur WhatsApp</h2>
-                    <div class="text-red-400 text-sm text-center py-4">
+            // Afficher un message d'erreur dans la section
+            const bottomSection = document.querySelector('#newChatPanel .px-4.mt-8');
+            if (bottomSection) {
+                bottomSection.innerHTML = `
+                    <div class="text-gray-500 text-sm">#</div>
+                    <div class="mt-4 text-red-400 text-sm text-center py-4">
                         Erreur lors du chargement des contacts
                     </div>
                 `;
@@ -231,15 +228,13 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <span class="text-gray-200 text-base">Nouvelle communauté</span>
                             </div>
                         </div>
-                        <!-- Contacts Section -->
-                        <div class="px-4 mt-6">
+                        <!-- Contacts Section (supprimée d'ici) -->
+                        
+                        <!-- Bottom Section avec # et contacts -->
+                        <div class="px-4 mt-8 flex-1 overflow-y-auto">
                             <div class="text-gray-500 text-sm text-center py-4">
                                 Chargement des contacts...
                             </div>
-                        </div>
-                        <!-- Bottom Section -->
-                        <div class="px-4 mt-8">
-                            <div class="text-gray-500 text-sm">#</div>
                         </div>
                     </div>
                 `;
