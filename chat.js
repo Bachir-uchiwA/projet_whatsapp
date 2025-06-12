@@ -80,7 +80,7 @@ async function createOrGetChat(contactId, contactName = null, contactPhone = nul
     }
 }
 
-// Fonction pour sauvegarder un message (modifiée)
+// Fonction pour sauvegarder un message (version optimisée)
 async function saveMessage(chatId, messageText, sender = 'me') {
     try {
         const messageData = {
@@ -105,10 +105,8 @@ async function saveMessage(chatId, messageText, sender = 'me') {
             })
         });
         
-        // Recharger la liste des chats pour mettre à jour l'affichage
-        setTimeout(() => {
-            loadAndDisplayChats();
-        }, 500);
+        // Recharger la liste des chats de manière asynchrone
+        loadAndDisplayChats();
         
         return savedMessage;
     } catch (error) {
@@ -181,209 +179,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const sidebarChats = document.getElementById('sidebarChats');
     const settingsIcon = document.getElementById('settingsIcon');
     const sidebarChatIcon = document.getElementById('sidebarChatIcon');
-    const mainContent = document.querySelector('.flex-1.bg-gray-800.flex.items-center.justify-center');
 
     // Sauvegarde pour restauration (une seule instance globale)
     let sidebarChatsBackup = null;
     let newChatBackup = null;
 
-    // Fonction pour charger et afficher les contacts dans la vue "Nouvelle discussion"
-    async function loadAndDisplayContacts() {
-        try {
-            console.log('Chargement des contacts...');
-            const contacts = await getContacts();
-            console.log('Contacts récupérés:', contacts);
-            
-            // Trouver la section avec le # (Bottom Section)
-            const bottomSection = document.querySelector('#newChatPanel .px-4.mt-8');
-            if (bottomSection) {
-                let contactsHTML = `
-                    <div class="text-gray-500 text-sm">#</div>
-                `;
-                
-                // Ajouter les contacts sauvegardés après le #
-                if (contacts && contacts.length > 0) {
-                    contactsHTML += `<div class="mt-4 space-y-2">`;
-                    
-                    contacts.forEach(contact => {
-                        const displayName = contact.fullName || `${contact.firstName || ''} ${contact.lastName || ''}`.trim() || contact.phone;
-                        const phoneDisplay = `+${contact.country === 'SN' ? '221' : ''}${contact.phone}`;
-                        
-                        contactsHTML += `
-                            <div class="flex items-center py-2 cursor-pointer hover:bg-gray-800 rounded-lg px-2 transition-colors contact-item" 
-                                 data-contact-id="${contact.id}"
-                                 data-contact-name="${displayName}"
-                                 data-contact-phone="${phoneDisplay}">
-                                <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center mr-3">
-                                    <i class="fas fa-user text-white text-sm"></i>
-                                </div>
-                                <div class="flex-1">
-                                    <div class="text-gray-200 text-base font-medium">${displayName}</div>
-                                    <div class="text-gray-400 text-sm">${phoneDisplay}</div>
-                                </div>
-                                <div class="text-gray-500 text-xs">
-                                    <i class="fas fa-chevron-right"></i>
-                                </div>
-                            </div>
-                        `;
-                    });
-                    
-                    contactsHTML += `</div>`;
-                } else {
-                    contactsHTML += `
-                        <div class="mt-4 text-gray-500 text-sm text-center py-4 italic">
-                            Aucun contact ajouté pour le moment
-                        </div>
-                    `;
-                }
-                
-                bottomSection.innerHTML = contactsHTML;
-                
-                // Ajouter les event listeners pour les contacts
-                setupContactClickListeners();
-            }
-        } catch (error) {
-            console.error('Erreur lors du chargement des contacts:', error);
-            // Afficher un message d'erreur dans la section
-            const bottomSection = document.querySelector('#newChatPanel .px-4.mt-8');
-            if (bottomSection) {
-                bottomSection.innerHTML = `
-                    <div class="text-gray-500 text-sm">#</div>
-                    <div class="mt-4 text-red-400 text-sm text-center py-4">
-                        Erreur lors du chargement des contacts
-                    </div>
-                `;
-            }
-        }
-    }
-
-    // Fonction pour initialiser tous les event listeners (modifiée)
-    function initializeEventListeners() {
-        // Charger les chats actifs au démarrage
+    // Charger les chats actifs au démarrage
+    setTimeout(() => {
         loadAndDisplayChats();
-        
-        // Gestion menu contextuel
-        setupContextMenu();
-        
-        // Gestion du bouton nouvelle discussion
-        setupNewChatButton();
-    }
-
-    // Fonction pour gérer le menu contextuel
-    function setupContextMenu() {
-        const menuBtn = document.getElementById('menuBtn');
-        const contextMenu = document.getElementById('contextMenu');
-
-        if (menuBtn && contextMenu) {
-            // Supprimer les anciens listeners pour éviter les doublons
-            const newMenuBtn = menuBtn.cloneNode(true);
-            menuBtn.parentNode.replaceChild(newMenuBtn, menuBtn);
-
-            newMenuBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                const isHidden = contextMenu.classList.contains('hidden');
-                if (isHidden) {
-                    contextMenu.classList.remove('hidden');
-                } else {
-                    contextMenu.classList.add('hidden');
-                }
-            });
-
-            document.addEventListener('click', (e) => {
-                if (!contextMenu.classList.contains('hidden')) {
-                    if (!contextMenu.contains(e.target) && !newMenuBtn.contains(e.target)) {
-                        contextMenu.classList.add('hidden');
-                    }
-                }
-            });
-
-            const logoutBtn = document.getElementById('logoutBtn');
-            if (logoutBtn) {
-                logoutBtn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    if (confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
-                        window.location.href = '/';
-                    }
-                });
-            }
-        }
-    }
-
-    // Fonction pour gérer le bouton nouvelle discussion
-    function setupNewChatButton() {
-        const newChatBtn = document.getElementById('newChatBtn');
-        if (newChatBtn && sidebarChats) {
-            // Supprimer l'ancien listener pour éviter les doublons
-            const newNewChatBtn = newChatBtn.cloneNode(true);
-            newChatBtn.parentNode.replaceChild(newNewChatBtn, newChatBtn);
-
-            newNewChatBtn.addEventListener('click', function () {
-                if (!sidebarChatsBackup) {
-                    sidebarChatsBackup = sidebarChats.innerHTML;
-                }
-                
-                const newChatHTML = `
-                    <div class="flex flex-col h-full bg-gray-900" id="newChatPanel">
-                        <!-- Header -->
-                        <div class="flex items-center p-4 bg-gray-800">
-                            <button id="backToChats" class="mr-4 focus:outline-none">
-                                <i class="fas fa-arrow-left text-gray-300 text-xl"></i>
-                            </button>
-                            <h1 class="text-lg font-medium text-gray-200">Nouvelle discussion</h1>
-                        </div>
-                        <!-- Search Bar -->
-                        <div class="px-4 py-3">
-                            <div class="relative">
-                                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm"></i>
-                                <input type="text" placeholder="Rechercher un nom ou un numéro" 
-                                    class="w-full bg-gray-800 text-gray-300 pl-10 pr-4 py-2 rounded-lg placeholder-gray-500 text-sm border-none focus:outline-none focus:ring-1 focus:ring-green-500">
-                            </div>
-                        </div>
-                        <!-- Action Items -->
-                        <div class="px-4">
-                            <div class="flex items-center py-3 cursor-pointer hover:bg-gray-800 rounded-lg" id="addContactBtn">
-                                <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center mr-4">
-                                    <i class="fas fa-user-plus text-white text-sm"></i>
-                                </div>
-                                <span class="text-gray-200 text-base">Nouveau contact</span>
-                            </div>
-                            <div class="flex items-center py-3 cursor-pointer hover:bg-gray-800 rounded-lg">
-                                <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center mr-4">
-                                    <i class="fas fa-users text-white text-sm"></i>
-                                </div>
-                                <span class="text-gray-200 text-base">Nouveau groupe</span>
-                            </div>
-                            <div class="flex items-center py-3 cursor-pointer hover:bg-gray-800 rounded-lg">
-                                <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center mr-4">
-                                    <i class="fas fa-users text-white text-sm"></i>
-                                </div>
-                                <span class="text-gray-200 text-base">Nouvelle communauté</span>
-                            </div>
-                        </div>
-                        <!-- Contacts Section (supprimée d'ici) -->
-                        
-                        <!-- Bottom Section avec # et contacts -->
-                        <div class="px-4 mt-8 flex-1 overflow-y-auto">
-                            <div class="text-gray-500 text-sm text-center py-4">
-                                Chargement des contacts...
-                            </div>
-                        </div>
-                    </div>
-                `;
-                
-                sidebarChats.innerHTML = newChatHTML;
-                newChatBackup = newChatHTML;
-                
-                // Charger les contacts depuis l'API
-                setTimeout(() => {
-                    loadAndDisplayContacts();
-                }, 500);
-                
-                setupNewChatListeners();
-            });
-        }
-    }
+    }, 500);
 
     // Afficher les paramètres et masquer la liste des chats
     if (settingsIcon && sidebarSettings && sidebarChats) {
@@ -401,10 +205,9 @@ document.addEventListener('DOMContentLoaded', function() {
         sidebarChatIcon.addEventListener('click', () => {
             sidebarSettings.classList.add('hidden');
             sidebarChats.classList.remove('hidden');
-            
-            // Réinitialiser tous les event listeners après le retour
+            // Recharger les chats quand on revient
             setTimeout(() => {
-                initializeEventListeners();
+                loadAndDisplayChats();
             }, 100);
         });
     }
@@ -1003,7 +806,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Fonction pour gérer les clics sur les contacts (modifiée)
+    // Fonction pour gérer les clics sur les contacts (version finale)
     function setupContactClickListeners() {
         const contactItems = document.querySelectorAll('.contact-item');
         const mainContent = document.querySelector('.flex-1.bg-gray-800.flex.items-center.justify-center');
@@ -1025,13 +828,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     setupChatInterface(contactId);
                 }
                 
-                // Retourner à la vue principale et recharger la liste des chats
+                // Retourner à la vue principale
                 if (sidebarChatsBackup) {
                     sidebarChats.innerHTML = sidebarChatsBackup;
+                    
+                    // Recharger la liste des chats après un court délai
                     setTimeout(() => {
-                        loadAndDisplayChats(); // Recharger la liste des chats
-                        initializeEventListeners();
-                    }, 100);
+                        loadAndDisplayChats();
+                    }, 200);
                 }
             });
         });
