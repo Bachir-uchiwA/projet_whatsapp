@@ -17,7 +17,7 @@ async function apiRequest(endpoint, options = {}) {
             },
             ...options
         });
-        
+         
         console.log('Réponse API:', response.status, response.statusText);
         
         if (!response.ok) {
