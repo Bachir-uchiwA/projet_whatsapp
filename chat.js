@@ -660,6 +660,44 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Configuration de l'API
+    const API_BASE_URL = 'https://projet-json-server-4.onrender.com'; // URL de ton JSON server sur Render
+
+    // Fonctions utilitaires pour l'API
+    async function apiRequest(endpoint, options = {}) {
+        try {
+            const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...options.headers
+                },
+                ...options
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            return await response.json();
+        } catch (error) {
+            console.error('API Error:', error);
+            throw error;
+        }
+    }
+
+    // Fonction pour sauvegarder un contact
+    async function saveContact(contactData) {
+        return await apiRequest('/contacts', {
+            method: 'POST',
+            body: JSON.stringify(contactData)
+        });
+    }
+
+    // Fonction pour récupérer tous les contacts
+    async function getContacts() {
+        return await apiRequest('/contacts');
+    }
+
     // Initialiser tous les event listeners au chargement
     initializeEventListeners();
 });
