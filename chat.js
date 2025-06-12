@@ -5,24 +5,22 @@ console.log("chat.js chargé !");
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log("DOM entièrement chargé !");
-    
-    // Gestion navigation sidebar
+
+    // Sélection des éléments DOM
     const sidebarSettings = document.getElementById('sidebarSettings');
     const sidebarChats = document.getElementById('sidebarChats');
     const settingsIcon = document.getElementById('settingsIcon');
     const sidebarChatIcon = document.getElementById('sidebarChatIcon');
 
-    // Sauvegarde pour restauration
+    // Sauvegarde pour restauration (une seule instance globale)
     let sidebarChatsBackup = null;
 
     // Afficher les paramètres et masquer la liste des chats
     if (settingsIcon && sidebarSettings && sidebarChats) {
         settingsIcon.addEventListener('click', () => {
-            // Sauvegarde le contenu de sidebarChats si pas déjà fait
             if (!sidebarChatsBackup) {
                 sidebarChatsBackup = sidebarChats.innerHTML;
             }
-            // Remplace le contenu du panneau chat par le panneau paramètres
             sidebarChats.classList.add('hidden');
             sidebarSettings.classList.remove('hidden');
         });
@@ -36,42 +34,30 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Gestion menu contextuel - VERSION AMÉLIORÉE
+    // Gestion menu contextuel
     const menuBtn = document.getElementById('menuBtn');
     const contextMenu = document.getElementById('contextMenu');
-
-    console.log("menuBtn:", menuBtn);
-    console.log("contextMenu:", contextMenu);
 
     if (menuBtn && contextMenu) {
         menuBtn.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            console.log("Clic sur menuBtn - Toggle menu");
-            
-            // Toggle du menu
             const isHidden = contextMenu.classList.contains('hidden');
             if (isHidden) {
                 contextMenu.classList.remove('hidden');
-                console.log("Menu affiché");
             } else {
                 contextMenu.classList.add('hidden');
-                console.log("Menu caché");
             }
         });
 
-        // Fermer le menu si clic en dehors
         document.addEventListener('click', (e) => {
             if (!contextMenu.classList.contains('hidden')) {
-                // Si le clic n'est pas sur le menu ni sur le bouton
                 if (!contextMenu.contains(e.target) && !menuBtn.contains(e.target)) {
                     contextMenu.classList.add('hidden');
-                    console.log("Menu fermé (clic extérieur)");
                 }
             }
         });
 
-        // Gestion déconnexion depuis le menu contextuel
         const logoutBtn = document.getElementById('logoutBtn');
         if (logoutBtn) {
             logoutBtn.addEventListener('click', (e) => {
@@ -81,8 +67,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         }
-    } else {
-        console.error("menuBtn ou contextMenu non trouvé !");
     }
 
     // Gestion déconnexion depuis les paramètres
@@ -96,27 +80,17 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // NOUVELLE FONCTIONNALITÉ : Gestion des clics sur les chats
+    // Gestion des clics sur les chats
     const chatItems = document.querySelectorAll('.flex.items-center.p-3.hover\\:bg-gray-700.cursor-pointer.border-gray-600');
     const mainContent = document.querySelector('.flex-1.bg-gray-800.flex.items-center.justify-center');
-
-    console.log("Chats trouvés:", chatItems.length);
-    console.log("Zone principale:", mainContent);
 
     if (chatItems.length > 0 && mainContent) {
         chatItems.forEach((chatItem, index) => {
             chatItem.addEventListener('click', () => {
-                console.log(`Clic sur le chat ${index + 1}`);
-                
-                // Récupérer les informations du chat cliqué
                 const chatName = chatItem.querySelector('.text-white.font-medium.text-sm.truncate')?.textContent || 'Contact';
                 const chatAvatar = chatItem.querySelector('img')?.src || null;
                 const chatBgColor = chatItem.querySelector('.rounded-full')?.classList.toString().match(/bg-\w+-\d+/)?.[0] || 'bg-gray-600';
-                
-                // Remplacer le contenu principal par la zone de chat
                 mainContent.innerHTML = createChatInterface(chatName, chatAvatar, chatBgColor);
-                
-                // Ajouter les event listeners pour la nouvelle interface
                 setupChatInterface();
             });
         });
@@ -221,7 +195,6 @@ document.addEventListener('DOMContentLoaded', function() {
             function sendMessage() {
                 const messageText = messageInput.value.trim();
                 if (messageText) {
-                    // Créer le nouveau message
                     const messageElement = document.createElement('div');
                     messageElement.className = 'flex justify-end';
                     messageElement.innerHTML = `
@@ -236,22 +209,12 @@ document.addEventListener('DOMContentLoaded', function() {
                             </div>
                         </div>
                     `;
-                    
-                    // Ajouter le message à la zone de messages
                     messagesArea.appendChild(messageElement);
-                    
-                    // Vider l'input
                     messageInput.value = '';
-                    
-                    // Scroll vers le bas
                     messagesArea.parentElement.scrollTop = messagesArea.parentElement.scrollHeight;
                 }
             }
-
-            // Event listener pour le bouton d'envoi
             sendButton.addEventListener('click', sendMessage);
-
-            // Event listener pour la touche Entrée
             messageInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     sendMessage();
@@ -261,10 +224,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Nouvelle discussion : bouton + (remplace sidebarChats)
-    let sidebarChatsBackup = null;
-
-    // Remplace le <svg> par un <button> dans le HTML (voir chat.html)
-    // Ici, on cible le bouton par son id
     const newChatBtn = document.getElementById('newChatBtn');
     if (newChatBtn && sidebarChats) {
         newChatBtn.addEventListener('click', function () {
@@ -329,14 +288,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 </div>
             `;
-            // Bouton retour
             const backBtn = document.getElementById('backToChats');
             if (backBtn) {
                 backBtn.addEventListener('click', function () {
                     if (sidebarChatsBackup) {
                         sidebarChats.innerHTML = sidebarChatsBackup;
                         sidebarChatsBackup = null;
-                        // Optionnel : recharger la page pour restaurer tous les listeners
                         window.location.reload();
                     }
                 });
