@@ -231,7 +231,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 sidebarChatsBackup = sidebarChats.innerHTML;
             }
             sidebarChats.innerHTML = `
-                <div class="flex flex-col h-full bg-gray-900">
+                <div class="flex flex-col h-full bg-gray-900" id="newChatPanel">
                     <!-- Header -->
                     <div class="flex items-center p-4 bg-gray-800">
                         <button id="backToChats" class="mr-4 focus:outline-none">
@@ -249,17 +249,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                     <!-- Action Items -->
                     <div class="px-4">
+                        <div class="flex items-center py-3" id="addContactBtn">
+                            <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center mr-4">
+                                <i class="fas fa-user-plus text-white text-sm"></i>
+                            </div>
+                            <span class="text-gray-200 text-base">Nouveau contact</span>
+                        </div>
                         <div class="flex items-center py-3">
                             <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center mr-4">
                                 <i class="fas fa-users text-white text-sm"></i>
                             </div>
                             <span class="text-gray-200 text-base">Nouveau groupe</span>
-                        </div>
-                        <div class="flex items-center py-3">
-                            <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center mr-4">
-                                <i class="fas fa-user-plus text-white text-sm"></i>
-                            </div>
-                            <span class="text-gray-200 text-base">Nouveau contact</span>
                         </div>
                         <div class="flex items-center py-3">
                             <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center mr-4">
@@ -295,6 +295,91 @@ document.addEventListener('DOMContentLoaded', function() {
                         sidebarChats.innerHTML = sidebarChatsBackup;
                         sidebarChatsBackup = null;
                         window.location.reload();
+                    }
+                });
+            }
+
+            // Ajout du listener pour "Nouveau contact"
+            const addContactBtn = document.getElementById('addContactBtn');
+            if (addContactBtn) {
+                addContactBtn.addEventListener('click', function () {
+                    // Remplace la vue par le formulaire "Nouveau contact"
+                    sidebarChats.innerHTML = `
+                        <div class="flex flex-col h-full bg-gray-900" id="addContactPanel">
+                            <!-- Header -->
+                            <div class="flex items-center px-4 py-6">
+                                <button id="backToNewChat" class="mr-4 text-gray-300">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                                    </svg>
+                                </button>
+                                <h1 class="text-lg text-gray-300 font-normal">Nouveau contact</h1>
+                            </div>
+                            <!-- Form -->
+                            <div class="px-6 pt-8 space-y-12">
+                                <!-- Prénom -->
+                                <div class="relative">
+                                    <div class="flex items-center mb-4">
+                                        <svg class="w-5 h-5 text-gray-500 mr-4" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        <span class="text-gray-400 text-sm">Prénom</span>
+                                    </div>
+                                    <input 
+                                        type="text" 
+                                        class="w-full bg-transparent border-0 border-b border-gray-600 focus:border-gray-500 outline-none pb-3 text-white text-lg"
+                                    >
+                                </div>
+                                <!-- Nom -->
+                                <div class="relative">
+                                    <div class="mb-4">
+                                        <span class="text-gray-400 text-sm">Nom</span>
+                                    </div>
+                                    <input 
+                                        type="text" 
+                                        class="w-full bg-transparent border-0 border-b border-gray-600 focus:border-gray-500 outline-none pb-3 text-white text-lg"
+                                    >
+                                </div>
+                                <!-- Téléphone -->
+                                <div class="relative">
+                                    <div class="flex items-center mb-4">
+                                        <svg class="w-5 h-5 text-gray-500 mr-4" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path>
+                                        </svg>
+                                        <div class="flex space-x-20">
+                                            <span class="text-gray-400 text-sm">Pays</span>
+                                            <span class="text-gray-400 text-sm">Téléphone</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-6">
+                                        <div class="flex items-center">
+                                            <span class="text-white text-lg mr-2">SN +221</span>
+                                            <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                            </svg>
+                                        </div>
+                                        <div class="flex-1">
+                                            <input 
+                                                type="tel" 
+                                                class="w-full bg-transparent border-0 border-b border-gray-600 focus:border-gray-500 outline-none pb-3 text-white text-lg"
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    // Bouton retour pour revenir à la vue précédente
+                    const backToNewChat = document.getElementById('backToNewChat');
+                    if (backToNewChat) {
+                        backToNewChat.addEventListener('click', function () {
+                            // Recharge la vue "Nouvelle discussion"
+                            if (sidebarChatsBackup) {
+                                sidebarChats.innerHTML = sidebarChatsBackup;
+                                sidebarChatsBackup = null;
+                                window.location.reload();
+                            }
+                        });
                     }
                 });
             }
