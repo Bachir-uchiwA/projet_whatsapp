@@ -6,7 +6,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
     try {
         const phone = document.getElementById('phone').value.trim();
         const country = document.getElementById('country').value;
-        const apiUrl = "https://projet-json-server-4.onrender.com";
+        const apiUrl = "https://projet-json-server-5.onrender.com";
 
         // Utilise l'API MongoDB Atlas en production (Vercel)
         let session;

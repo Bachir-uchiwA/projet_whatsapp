@@ -4,7 +4,7 @@
 console.log("chat.js chargé !");
 
 // Configuration de l'API
-const API_BASE_URL = 'https://projet-json-server-4.onrender.com';
+const API_BASE_URL = 'https://projet-json-server-5.onrender.com';
 
 // Fonctions utilitaires pour l'API
 async function apiRequest(endpoint, options = {}) {
@@ -46,6 +46,98 @@ async function getContacts() {
     return await apiRequest('/contacts');
 }
 
+// Fonction pour créer ou récupérer un chat (version corrigée)
+async function createOrGetChat(contactId, contactName = null, contactPhone = null) {
+    try {
+        // Vérifier si un chat existe déjà avec ce contact
+        const existingChats = await apiRequest('/chats');
+        let chat = existingChats.find(c => c.contactId === contactId);
+        
+        if (!chat && contactName && contactPhone) {
+            // Créer un nouveau chat seulement si on a les informations du contact
+            const chatData = {
+                contactId: contactId,
+                contactName: contactName,
+                contactPhone: contactPhone,
+                lastMessage: '',
+                lastMessageTime: new Date().toISOString(),
+                unreadCount: 0,
+                createdAt: new Date().toISOString()
+            };
+            
+            chat = await apiRequest('/chats', {
+                method: 'POST',
+                body: JSON.stringify(chatData)
+            });
+            
+            console.log('Nouveau chat créé:', chat);
+        }
+        
+        return chat;
+    } catch (error) {
+        console.error('Erreur lors de la création/récupération du chat:', error);
+        return null;
+    }
+}
+
+// Fonction pour sauvegarder un message
+async function saveMessage(chatId, messageText, sender = 'me') {
+    try {
+        const messageData = {
+            chatId: chatId,
+            text: messageText,
+            sender: sender,
+            timestamp: new Date().toISOString(),
+            status: 'sent' // sent, delivered, read
+        };
+        
+        const savedMessage = await apiRequest('/messages', {
+            method: 'POST',
+            body: JSON.stringify(messageData)
+        });
+        
+        // Mettre à jour le dernier message du chat
+        await apiRequest(`/chats/${chatId}`, {
+            method: 'PATCH',
+            body: JSON.stringify({
+                lastMessage: messageText,
+                lastMessageTime: new Date().toISOString()
+            })
+        });
+         
+        return savedMessage;
+    } catch (error) {
+        console.error('Erreur lors de la sauvegarde du message:', error);
+        return null;
+    }
+}
+
+// Fonction pour charger les messages d'un chat
+async function loadMessages(chatId) {
+    try {
+        const messages = await apiRequest(`/messages?chatId=${chatId}&_sort=timestamp&_order=asc`);
+        return messages;
+    } catch (error) {
+        console.error('Erreur lors du chargement des messages:', error);
+        return [];
+    }
+}
+
+// Fonction pour ajouter un nouveau chat à la sidebar
+async function addChatToSidebar(contactId, contactName, contactPhone) {
+    try {
+        // Cette fonction peut être appelée pour ajouter dynamiquement un chat à la sidebar
+        // Tu peux l'implémenter selon tes besoins pour mettre à jour la liste des chats
+        console.log('Ajout du chat à la sidebar:', { contactId, contactName, contactPhone });
+        
+        // Ici tu peux ajouter la logique pour mettre à jour la sidebar avec le nouveau chat
+        // Par exemple, recharger la liste des chats depuis l'API
+        
+    } catch (error) {
+        console.error('Erreur lors de l\'ajout du chat à la sidebar:', error);
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     console.log("DOM entièrement chargé !");
 
@@ -67,59 +159,62 @@ document.addEventListener('DOMContentLoaded', function() {
             const contacts = await getContacts();
             console.log('Contacts récupérés:', contacts);
             
-            // Trouver la section des contacts
-            const contactsSection = document.querySelector('#newChatPanel .px-4.mt-6');
-            if (contactsSection) {
+            // Trouver la section avec le # (Bottom Section)
+            const bottomSection = document.querySelector('#newChatPanel .px-4.mt-8');
+            if (bottomSection) {
                 let contactsHTML = `
-                    <h2 class="text-gray-400 text-sm font-medium mb-4">Contacts sur WhatsApp</h2>
-                    <div class="flex items-center py-2">
-                        <div class="w-10 h-10 rounded-full overflow-hidden mr-4">
-                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face" 
-                                alt="Profile" class="w-full h-full object-cover">
-                        </div>
-                        <div class="flex-1">
-                            <div class="text-gray-200 text-base">BACHIR IIR💻🏠 (vous)</div>
-                            <div class="text-gray-400 text-sm">Envoyez-vous un message</div>
-                        </div>
-                    </div>
+                    <div class="text-gray-500 text-sm">#</div>
                 `;
                 
-                // Ajouter les contacts sauvegardés
+                // Ajouter les contacts sauvegardés après le #
                 if (contacts && contacts.length > 0) {
+                    contactsHTML += `<div class="mt-4 space-y-2">`;
+                    
                     contacts.forEach(contact => {
                         const displayName = contact.fullName || `${contact.firstName || ''} ${contact.lastName || ''}`.trim() || contact.phone;
                         const phoneDisplay = `+${contact.country === 'SN' ? '221' : ''}${contact.phone}`;
                         
                         contactsHTML += `
-                            <div class="flex items-center py-2 cursor-pointer hover:bg-gray-800 rounded-lg px-2">
-                                <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center mr-4">
+                            <div class="flex items-center py-2 cursor-pointer hover:bg-gray-800 rounded-lg px-2 transition-colors contact-item" 
+                                 data-contact-id="${contact.id}"
+                                 data-contact-name="${displayName}"
+                                 data-contact-phone="${phoneDisplay}">
+                                <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center mr-3">
                                     <i class="fas fa-user text-white text-sm"></i>
                                 </div>
                                 <div class="flex-1">
-                                    <div class="text-gray-200 text-base">${displayName}</div>
+                                    <div class="text-gray-200 text-base font-medium">${displayName}</div>
                                     <div class="text-gray-400 text-sm">${phoneDisplay}</div>
+                                </div>
+                                <div class="text-gray-500 text-xs">
+                                    <i class="fas fa-chevron-right"></i>
                                 </div>
                             </div>
                         `;
                     });
+                    
+                    contactsHTML += `</div>`;
                 } else {
                     contactsHTML += `
-                        <div class="text-gray-500 text-sm text-center py-4">
+                        <div class="mt-4 text-gray-500 text-sm text-center py-4 italic">
                             Aucun contact ajouté pour le moment
                         </div>
                     `;
                 }
                 
-                contactsSection.innerHTML = contactsHTML;
+                bottomSection.innerHTML = contactsHTML;
+                
+                // Ajouter les event listeners pour les contacts
+                setupContactClickListeners();
             }
         } catch (error) {
             console.error('Erreur lors du chargement des contacts:', error);
-            // Afficher un message d'erreur dans l'interface
-            const contactsSection = document.querySelector('#newChatPanel .px-4.mt-6');
-            if (contactsSection) {
-                contactsSection.innerHTML = `
-                    <h2 class="text-gray-400 text-sm font-medium mb-4">Contacts sur WhatsApp</h2>
-                    <div class="text-red-400 text-sm text-center py-4">
+            // Afficher un message d'erreur dans la section
+            const bottomSection = document.querySelector('#newChatPanel .px-4.mt-8');
+            if (bottomSection) {
+                bottomSection.innerHTML = `
+                    <div class="text-gray-500 text-sm">#</div>
+                    <div class="mt-4 text-red-400 text-sm text-center py-4">
                         Erreur lors du chargement des contacts
                     </div>
                 `;
@@ -231,15 +326,13 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <span class="text-gray-200 text-base">Nouvelle communauté</span>
                             </div>
                         </div>
-                        <!-- Contacts Section -->
-                        <div class="px-4 mt-6">
+                        <!-- Contacts Section (supprimée d'ici) -->
+                        
+                        <!-- Bottom Section avec # et contacts -->
+                        <div class="px-4 mt-8 flex-1 overflow-y-auto">
                             <div class="text-gray-500 text-sm text-center py-4">
                                 Chargement des contacts...
                             </div>
-                        </div>
-                        <!-- Bottom Section -->
-                        <div class="px-4 mt-8">
-                            <div class="text-gray-500 text-sm">#</div>
                         </div>
                     </div>
                 `;
@@ -313,9 +406,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    function createChatInterface(contactName, avatarSrc, bgColor) {
+    function createChatInterface(contactName, avatarSrc, bgColor, contactId = null) {
         return `
-            <div class="flex-1 flex flex-col h-full">
+            <div class="flex-1 flex flex-col h-full" data-contact-id="${contactId}">
                 <!-- Chat Header -->
                 <div class="bg-gray-800 p-3 flex items-center justify-between border-b border-gray-700">
                     <div class="flex items-center space-x-3">
@@ -341,38 +434,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
 
                 <!-- Messages Area -->
-                <div class="flex-1 bg-gray-900 overflow-y-auto relative">
-                    <div class="p-6 space-y-4">
+                <div class="flex-1 bg-gray-900 overflow-y-auto relative" id="messagesContainer">
+                    <div class="p-6 space-y-4" id="messagesArea">
                         <!-- Day Separator -->
                         <div class="flex justify-center my-6">
                             <div class="bg-gray-800 bg-opacity-80 text-gray-400 text-xs px-3 py-1.5 rounded-xl">Aujourd'hui</div>
                         </div>
-
-                        <!-- Message d'exemple -->
-                        <div class="flex justify-start">
-                            <div class="max-w-xs">
-                                <div class="bg-gray-700 rounded-lg p-3 relative">
-                                    <div class="absolute top-0 -left-2 w-0 h-0 border-r-8 border-r-gray-700 border-t-8 border-t-transparent"></div>
-                                    <div class="text-white text-sm">Salut ! Comment ça va ?</div>
-                                </div>
-                                <div class="flex justify-start items-center mt-1">
-                                    <span class="text-gray-500 text-xs">10:30</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Message envoyé -->
-                        <div class="flex justify-end">
-                            <div class="max-w-xs">
-                                <div class="bg-green-600 rounded-lg p-3 relative">
-                                    <div class="absolute top-0 -right-2 w-0 h-0 border-l-8 border-l-green-600 border-t-8 border-t-transparent"></div>
-                                    <div class="text-white text-sm">Salut ! Ça va bien, merci ! Et toi ?</div>
-                                </div>
-                                <div class="flex justify-end items-center mt-1">
-                                    <span class="text-gray-500 text-xs">10:32</span>
-                                    <i class="fas fa-check-double text-blue-400 text-sm ml-1"></i>
-                                </div>
-                            </div>
+                        
+                        <!-- Les messages seront chargés ici -->
+                        <div class="text-center text-gray-500 text-sm py-4">
+                            Chargement des messages...
                         </div>
                     </div>
                 </div>
@@ -403,32 +474,66 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
     }
 
-    function setupChatInterface() {
+    function setupChatInterface(contactId = null) {
         const messageInput = document.getElementById('messageInput');
         const sendButton = document.getElementById('sendButton');
-        const messagesArea = document.querySelector('.flex-1.bg-gray-900.overflow-y-auto .p-6.space-y-4');
+        const messagesArea = document.getElementById('messagesArea');
+        const messagesContainer = document.getElementById('messagesContainer');
+
+        // Charger les messages existants
+        if (contactId) {
+            loadChatMessages(contactId);
+        }
 
         if (messageInput && sendButton && messagesArea) {
-            function sendMessage() {
+            async function sendMessage() {
                 const messageText = messageInput.value.trim();
-                if (messageText) {
-                    const messageElement = document.createElement('div');
-                    messageElement.className = 'flex justify-end';
-                    messageElement.innerHTML = `
-                        <div class="max-w-xs">
-                            <div class="bg-green-600 rounded-lg p-3 relative">
-                                <div class="absolute top-0 -right-2 w-0 h-0 border-l-8 border-l-green-600 border-t-8 border-t-transparent"></div>
-                                <div class="text-white text-sm">${messageText}</div>
+                if (messageText && contactId) {
+                    // Désactiver temporairement l'input
+                    messageInput.disabled = true;
+                    sendButton.style.opacity = '0.5';
+                    
+                    try {
+                        // Sauvegarder le message dans la base de données
+                        const chat = await createOrGetChat(contactId);
+                        if (chat) {
+                            await saveMessage(chat.id, messageText, 'me');
+                        }
+                        
+                        // Ajouter le message à l'interface
+                        const messageElement = document.createElement('div');
+                        messageElement.className = 'flex justify-end';
+                        messageElement.innerHTML = `
+                            <div class="max-w-xs">
+                                <div class="bg-green-600 rounded-lg p-3 relative">
+                                    <div class="absolute top-0 -right-2 w-0 h-0 border-l-8 border-l-green-600 border-t-8 border-t-transparent"></div>
+                                    <div class="text-white text-sm">${messageText}</div>
+                                </div>
+                                <div class="flex justify-end items-center mt-1">
+                                    <span class="text-gray-500 text-xs">${new Date().toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'})}</span>
+                                    <i class="fas fa-check text-gray-400 text-sm ml-1"></i>
+                                </div>
                             </div>
-                            <div class="flex justify-end items-center mt-1">
-                                <span class="text-gray-500 text-xs">${new Date().toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'})}</span>
-                                <i class="fas fa-check text-gray-400 text-sm ml-1"></i>
-                            </div>
-                        </div>
-                    `;
-                    messagesArea.appendChild(messageElement);
-                    messageInput.value = '';
-                    messagesArea.parentElement.scrollTop = messagesArea.parentElement.scrollHeight;
+                        `;
+                        
+                        // Supprimer le message "Chargement des messages..." s'il existe
+                        const loadingMessage = messagesArea.querySelector('.text-center.text-gray-500');
+                        if (loadingMessage) {
+                            loadingMessage.remove();
+                        }
+                        
+                        messagesArea.appendChild(messageElement);
+                        messageInput.value = '';
+                        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                        
+                    } catch (error) {
+                        console.error('Erreur lors de l\'envoi du message:', error);
+                        alert('Erreur lors de l\'envoi du message');
+                    } finally {
+                        // Réactiver l'input
+                        messageInput.disabled = false;
+                        sendButton.style.opacity = '1';
+                    }
                 }
             }
             sendButton.addEventListener('click', sendMessage);
@@ -439,6 +544,75 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     }
+
+    // Fonction pour charger et afficher les messages d'un chat
+    async function loadChatMessages(contactId) {
+        try {
+            // Récupérer le chat
+            const chats = await apiRequest('/chats');
+            const chat = chats.find(c => c.contactId === contactId);
+            
+            if (chat) {
+                // Charger les messages
+                const messages = await loadMessages(chat.id);
+                const messagesArea = document.getElementById('messagesArea');
+                
+                if (messagesArea && messages.length > 0) {
+                    // Supprimer le message de chargement
+                    messagesArea.innerHTML = `
+                        <div class="flex justify-center my-6">
+                            <div class="bg-gray-800 bg-opacity-80 text-gray-400 text-xs px-3 py-1.5 rounded-xl">Aujourd'hui</div>
+                        </div>
+                    </div>
+                `;
+                
+                // Afficher les messages
+                messages.forEach(message => {
+                    const messageElement = document.createElement('div');
+                    const isMyMessage = message.sender === 'me';
+                    
+                    messageElement.className = `flex ${isMyMessage ? 'justify-end' : 'justify-start'}`;
+                    messageElement.innerHTML = `
+                        <div class="max-w-xs">
+                            <div class="${isMyMessage ? 'bg-green-600' : 'bg-gray-700'} rounded-lg p-3 relative">
+                                <div class="absolute top-0 ${isMyMessage ? '-right-2 w-0 h-0 border-l-8 border-l-green-600' : '-left-2 w-0 h-0 border-r-8 border-r-gray-700'} border-t-8 border-t-transparent"></div>
+                                <div class="text-white text-sm">${message.text}</div>
+                            </div>
+                            <div class="flex ${isMyMessage ? 'justify-end' : 'justify-start'} items-center mt-1">
+                                <span class="text-gray-500 text-xs">${new Date(message.timestamp).toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'})}</span>
+                                ${isMyMessage ? '<i class="fas fa-check text-gray-400 text-sm ml-1"></i>' : ''}
+                            </div>
+                        </div>
+                    `;
+                    
+                    messagesArea.appendChild(messageElement);
+                });
+                
+                // Scroll vers le bas
+                const messagesContainer = document.getElementById('messagesContainer');
+                if (messagesContainer) {
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                }
+            } else {
+                // Aucun message, afficher un message d'accueil
+                const messagesArea = document.getElementById('messagesArea');
+                if (messagesArea) {
+                    messagesArea.innerHTML = `
+                        <div class="flex justify-center my-6">
+                            <div class="bg-gray-800 bg-opacity-80 text-gray-400 text-xs px-3 py-1.5 rounded-xl">Aujourd'hui</div>
+                        </div>
+                        <div class="text-center text-gray-500 text-sm py-8">
+                            <i class="fas fa-comments text-4xl mb-4 text-gray-600"></i>
+                            <p>Commencez une conversation avec ce contact</p>
+                        </div>
+                    `;
+                }
+            }
+        }
+    } catch (error) {
+        console.error('Erreur lors du chargement des messages:', error);
+    }
+}
 
     // Nouvelle discussion : bouton + (remplace sidebarChats)
     const newChatBtn = document.getElementById('newChatBtn');
@@ -545,8 +719,6 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <div class="flex items-center mb-4">
                                         <svg class="w-5 h-5 text-gray-500 mr-4" fill="currentColor" viewBox="0 0 20 20">
                                             <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
-                                        </svg>
-                                        <span class="text-gray-400 text-sm">Prénom</span>
                                     </div>
                                     <input 
                                         type="text" 
@@ -648,7 +820,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <div class="flex items-center mb-4">
                                     <svg class="w-5 h-5 text-gray-500 mr-4" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
-                                    </svg>
+                                    </div>
                                     <span class="text-gray-400 text-sm">Prénom</span>
                                 </div>
                                 <input 
@@ -792,6 +964,41 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         }
+    }
+
+    // Fonction pour gérer les clics sur les contacts
+    function setupContactClickListeners() {
+        const contactItems = document.querySelectorAll('.contact-item');
+        const mainContent = document.querySelector('.flex-1.bg-gray-800.flex.items-center.justify-center');
+        
+        contactItems.forEach(contactItem => {
+            contactItem.addEventListener('click', async () => {
+                const contactId = contactItem.getAttribute('data-contact-id');
+                const contactName = contactItem.getAttribute('data-contact-name');
+                const contactPhone = contactItem.getAttribute('data-contact-phone');
+                
+                console.log('Contact sélectionné:', { contactId, contactName, contactPhone });
+                
+                // Créer ou récupérer le chat avec ce contact
+                const chat = await createOrGetChat(contactId, contactName, contactPhone);
+                
+                // Afficher l'interface de chat
+                if (mainContent) {
+                    mainContent.innerHTML = createChatInterface(contactName, null, 'bg-blue-500', contactId);
+                    setupChatInterface(contactId);
+                }
+                
+                // Retourner à la vue principale (masquer la sidebar "Nouvelle discussion")
+                if (sidebarChatsBackup) {
+                    sidebarChats.innerHTML = sidebarChatsBackup;
+                    setTimeout(() => {
+                        initializeEventListeners();
+                        // Mettre en surbrillance le chat actif dans la sidebar
+                        highlightActiveChat(contactId);
+                    }, 100);
+                }
+            });
+        });
     }
 
     // Initialiser tous les event listeners au chargement

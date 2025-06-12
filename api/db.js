@@ -10,4 +10,5 @@ export default async function handler(req, res) {
   const data = await fs.readFile(filePath, 'utf8');
   res.setHeader('Content-Type', 'application/json');
   res.status(200).send(data);
+  // Remplace toute référence à l'ancien render par le nouveau si tu en ajoutes ici
 }

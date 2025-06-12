@@ -30,3 +30,4 @@ export default async function handler(req, res) {
     res.status(500).json({ error: 'Erreur serveur', details: err.message });
   }
 }
+// Remplace toute référence à l'ancien render par le nouveau si tu en ajoutes ici

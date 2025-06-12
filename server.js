@@ -9,6 +9,9 @@ const server = jsonServer.create();
 const router = jsonServer.router(join(__dirname, 'db.json'));
 const middlewares = jsonServer.defaults();
 
+const API_BASE_URL = 'https://projet-json-server-5.onrender.com';
+// (Remarque: ce fichier n'utilise pas explicitement l'URL, mais si tu utilises l'URL ailleurs dans ce fichier, remplace-la par la nouvelle.)
+
 // CORS and JSON headers
 server.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
