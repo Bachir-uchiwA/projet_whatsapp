@@ -80,7 +80,7 @@ async function createOrGetChat(contactId, contactName = null, contactPhone = nul
     }
 }
 
-// Fonction pour sauvegarder un message
+// Fonction pour sauvegarder un message (modifiée)
 async function saveMessage(chatId, messageText, sender = 'me') {
     try {
         const messageData = {
@@ -88,7 +88,7 @@ async function saveMessage(chatId, messageText, sender = 'me') {
             text: messageText,
             sender: sender,
             timestamp: new Date().toISOString(),
-            status: 'sent' // sent, delivered, read
+            status: 'sent'
         };
         
         const savedMessage = await apiRequest('/messages', {
@@ -104,6 +104,11 @@ async function saveMessage(chatId, messageText, sender = 'me') {
                 lastMessageTime: new Date().toISOString()
             })
         });
+        
+        // Recharger la liste des chats pour mettre à jour l'affichage
+        setTimeout(() => {
+            loadAndDisplayChats();
+        }, 500);
         
         return savedMessage;
     } catch (error) {
@@ -136,6 +141,36 @@ async function addChatToSidebar(contactId, contactName, contactPhone) {
     } catch (error) {
         console.error('Erreur lors de l\'ajout du chat à la sidebar:', error);
     }
+}
+
+// Fonction pour calculer le temps écoulé
+function getTimeAgo(timestamp) {
+    const now = new Date();
+    const messageTime = new Date(timestamp);
+    const diffInMinutes = Math.floor((now - messageTime) / (1000 * 60));
+    
+    if (diffInMinutes < 1) return 'maintenant';
+    if (diffInMinutes < 60) return `${diffInMinutes}min`;
+    
+    const diffInHours = Math.floor(diffInMinutes / 60);
+    if (diffInHours < 24) return `${diffInHours}h`;
+    
+    const diffInDays = Math.floor(diffInHours / 24);
+    if (diffInDays < 7) return `${diffInDays}j`;
+    
+    // Pour les messages plus anciens, afficher la date
+    return messageTime.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' });
+}
+
+// Fonction pour actualiser périodiquement la liste des chats
+function startChatRefresh() {
+    // Actualiser la liste des chats toutes les 30 secondes
+    setInterval(() => {
+        // Ne pas actualiser si on est dans une vue autre que la liste des chats
+        if (!document.getElementById('newChatPanel') && !sidebarSettings.classList.contains('hidden') === false) {
+            loadAndDisplayChats();
+        }
+    }, 30000); // 30 secondes
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -222,13 +257,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Fonction pour initialiser tous les event listeners
+    // Fonction pour initialiser tous les event listeners (modifiée)
     function initializeEventListeners() {
+        // Charger les chats actifs au démarrage
+        loadAndDisplayChats();
+        
         // Gestion menu contextuel
         setupContextMenu();
-        
-        // Gestion des clics sur les chats
-        setupChatListeners();
         
         // Gestion du bouton nouvelle discussion
         setupNewChatButton();
@@ -849,7 +884,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <div class="flex items-center mb-4">
                                     <svg class="w-5 h-5 text-gray-500 mr-4" fill="currentColor" viewBox="0 0 20 20">
                                         <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path>
-                                    </svg>
+                                        </svg>
                                     <div class="flex space-x-20">
                                         <span class="text-gray-400 text-sm">Pays</span>
                                         <span class="text-gray-400 text-sm">Téléphone</span>
@@ -968,7 +1003,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Fonction pour gérer les clics sur les contacts
+    // Fonction pour gérer les clics sur les contacts (modifiée)
     function setupContactClickListeners() {
         const contactItems = document.querySelectorAll('.contact-item');
         const mainContent = document.querySelector('.flex-1.bg-gray-800.flex.items-center.justify-center');
@@ -990,13 +1025,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     setupChatInterface(contactId);
                 }
                 
-                // Retourner à la vue principale (masquer la sidebar "Nouvelle discussion")
+                // Retourner à la vue principale et recharger la liste des chats
                 if (sidebarChatsBackup) {
                     sidebarChats.innerHTML = sidebarChatsBackup;
                     setTimeout(() => {
+                        loadAndDisplayChats(); // Recharger la liste des chats
                         initializeEventListeners();
-                        // Mettre en surbrillance le chat actif dans la sidebar
-                        highlightActiveChat(contactId);
                     }, 100);
                 }
             });
