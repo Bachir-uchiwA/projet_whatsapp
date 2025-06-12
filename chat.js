@@ -8,23 +8,20 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Gestion navigation sidebar
     const settingsIcon = document.getElementById('settingsIcon');
-    const sidebarChats = document.getElementById('sidebarChats');
     const sidebarSettings = document.getElementById('sidebarSettings');
     const sidebarChatIcon = document.getElementById('sidebarChatIcon');
 
-    if (settingsIcon && sidebarChats && sidebarSettings) {
+    if (settingsIcon && sidebarSettings) {
         settingsIcon.addEventListener('click', () => {
             console.log("Clic sur settingsIcon");
-            sidebarChats.classList.add('hidden');
             sidebarSettings.classList.remove('hidden');
         });
     }
     
-    if (sidebarChatIcon && sidebarChats && sidebarSettings) {
+    if (sidebarChatIcon && sidebarSettings) {
         sidebarChatIcon.addEventListener('click', () => {
             console.log("Clic sur sidebarChatIcon");
             sidebarSettings.classList.add('hidden');
-            sidebarChats.classList.remove('hidden');
         });
     }
 
@@ -252,17 +249,15 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Ajout gestion nouvelle discussion (icône new-chat-outline)
-    const newChatIcon = document.querySelector(
-        'svg[viewBox="0 0 24 24"][height="24"][width="24"][preserveAspectRatio="xMidYMid meet"]'
-    );
+    // Nouvelle discussion : bouton + (remplace sidebarChats)
     const sidebarChats = document.getElementById('sidebarChats');
     let sidebarChatsBackup = null;
 
-    if (newChatIcon && sidebarChats) {
-        newChatIcon.style.cursor = "pointer";
-        newChatIcon.addEventListener('click', () => {
-            // Sauvegarde le contenu original si pas déjà fait
+    // Remplace le <svg> par un <button> dans le HTML (voir chat.html)
+    // Ici, on cible le bouton par son id
+    const newChatBtn = document.getElementById('newChatBtn');
+    if (newChatBtn && sidebarChats) {
+        newChatBtn.addEventListener('click', function () {
             if (!sidebarChatsBackup) {
                 sidebarChatsBackup = sidebarChats.innerHTML;
             }
@@ -324,14 +319,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 </div>
             `;
-            // Ajoute gestion du bouton retour
+            // Bouton retour
             const backBtn = document.getElementById('backToChats');
             if (backBtn) {
-                backBtn.addEventListener('click', () => {
+                backBtn.addEventListener('click', function () {
                     if (sidebarChatsBackup) {
                         sidebarChats.innerHTML = sidebarChatsBackup;
                         sidebarChatsBackup = null;
-                        // Recharger les listeners si besoin (optionnel)
+                        // Optionnel : recharger la page pour restaurer tous les listeners
                         window.location.reload();
                     }
                 });
